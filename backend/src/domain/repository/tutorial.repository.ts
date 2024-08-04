@@ -7,6 +7,7 @@ export abstract class TutorialRepository {
     pagination: TutorialPagination,
   ): Promise<Tutorial[]>;
   abstract getById(id: string): Promise<Tutorial>;
+  abstract getByUserId(userId: string): Promise<Tutorial[]>;
   abstract create(tutorial: Tutorial): Promise<Tutorial>;
   abstract update(
     id: string,

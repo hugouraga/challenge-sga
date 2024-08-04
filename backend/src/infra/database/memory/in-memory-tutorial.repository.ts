@@ -26,6 +26,12 @@ export class InMemoryTutorialRepository implements TutorialRepository {
     return tutorial;
   }
 
+  async getByUserId(userId: string): Promise<Tutorial[]> {
+    return this.tutorialList.filter(
+      (tutorial) => tutorial.creatorId === userId,
+    );
+  }
+
   async create(tutorial: Tutorial): Promise<Tutorial> {
     this.tutorialList.push(tutorial);
     return tutorial;
