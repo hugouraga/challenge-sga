@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 import { TutorialInterface } from '@/domain/interface/tutorial-interface';
+import { CustomError } from '@/utils/error/custom.error';
 
 export class Tutorial {
   private readonly _id: string;
@@ -28,6 +29,11 @@ export class Tutorial {
     updatedAt,
     isDeleted,
   }: TutorialInterface) {
+    this.validateTitle(title);
+    this.validateEstimatedDuration(estimatedDuration);
+    this.validateDifficultyLevel(difficultyLevel);
+    this.validateCreatorId(creatorId);
+
     this._id = id;
     this._title = title;
     this._summary = summary;
@@ -115,6 +121,54 @@ export class Tutorial {
     return this._isDeleted;
   }
 
+  private validateTitle(title: string): void {
+    if (!title) {
+      throw new CustomError('Title cannot be empty', 400);
+    }
+  }
+
+  private validateEstimatedDuration(estimatedDuration: string): void {
+    if (!estimatedDuration) {
+      throw new CustomError('Estimated duration cannot be empty', 400);
+    }
+  }
+
+  private validateDifficultyLevel(difficultyLevel: DifficultyLevel): void {
+    if (!difficultyLevel) {
+      throw new CustomError('Difficulty level cannot be empty', 400);
+    }
+  }
+
+  private validateCreatorId(creatorId: string): void {
+    if (!creatorId) {
+      throw new CustomError('Creator ID cannot be empty', 400);
+    }
+  }
+  public update(updatedTutorial: Partial<Tutorial>): void {
+    if (updatedTutorial.title !== undefined) {
+      this.validateTitle(updatedTutorial.title);
+      this.updateTitle(updatedTutorial.title);
+    }
+    if (updatedTutorial.summary !== undefined)
+      this.updateSummary(updatedTutorial.summary);
+    if (updatedTutorial.estimatedDuration !== undefined) {
+      this.validateEstimatedDuration(updatedTutorial.estimatedDuration);
+      this.updateEstimatedDuration(updatedTutorial.estimatedDuration);
+    }
+    if (updatedTutorial.requirements !== undefined)
+      this.updateRequirements(updatedTutorial.requirements);
+    if (updatedTutorial.difficultyLevel !== undefined) {
+      this.validateDifficultyLevel(updatedTutorial.difficultyLevel);
+      this.updateDifficultyLevel(updatedTutorial.difficultyLevel);
+    }
+    if (updatedTutorial.creatorId !== undefined) {
+      this.validateCreatorId(updatedTutorial.creatorId);
+      this.updateCreatorId(updatedTutorial.creatorId);
+    }
+    if (updatedTutorial.tags !== undefined)
+      this.updateTags(updatedTutorial.tags);
+  }
+
   private updateTitle(title: string): void {
     this._title = title;
     this._updatedAt = new Date();
@@ -145,19 +199,9 @@ export class Tutorial {
     this._updatedAt = new Date();
   }
 
-  public update(updatedTutorial: Partial<Tutorial>): void {
-    if (updatedTutorial.title !== undefined)
-      this.updateTitle(updatedTutorial.title);
-    if (updatedTutorial.summary !== undefined)
-      this.updateSummary(updatedTutorial.summary);
-    if (updatedTutorial.estimatedDuration !== undefined)
-      this.updateEstimatedDuration(updatedTutorial.estimatedDuration);
-    if (updatedTutorial.requirements !== undefined)
-      this.updateRequirements(updatedTutorial.requirements);
-    if (updatedTutorial.difficultyLevel !== undefined)
-      this.updateDifficultyLevel(updatedTutorial.difficultyLevel);
-    if (updatedTutorial.tags !== undefined)
-      this.updateTags(updatedTutorial.tags);
+  private updateCreatorId(creatorId: string): void {
+    this._creatorId = creatorId;
+    this._updatedAt = new Date();
   }
 
   public markAsDeleted(): void {
