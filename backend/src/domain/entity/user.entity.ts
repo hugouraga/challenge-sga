@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import * as bcrypt from 'bcrypt';
 import { UserInterface } from '@/domain/interface/user-interface';
 
 export class User {
@@ -29,13 +30,18 @@ export class User {
     this._updatedAt = updatedAt;
   }
 
-  public static createNew(name: string, email: string, password: string): User {
+  public static async createNew(
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<User> {
     const now = new Date();
+    const hashedPassword = await bcrypt.hash(password, 6);
     return new User({
       id: randomUUID(),
       name,
       email,
-      password,
+      password: hashedPassword,
       createdAt: now,
       updatedAt: now,
     });
@@ -88,7 +94,7 @@ export class User {
     return this._updatedAt;
   }
 
-  public update(updatedUser: Partial<UserInterface>): void {
+  public async update(updatedUser: Partial<UserInterface>): Promise<void> {
     if (updatedUser.name !== undefined) {
       this.validateName(updatedUser.name);
       this._name = updatedUser.name;
@@ -99,8 +105,12 @@ export class User {
     }
     if (updatedUser.password !== undefined) {
       this.validatePassword(updatedUser.password);
-      this._password = updatedUser.password;
+      this._password = await bcrypt.hash(updatedUser.password, 6);
     }
     this._updatedAt = new Date();
+  }
+
+  public async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this._password);
   }
 }
