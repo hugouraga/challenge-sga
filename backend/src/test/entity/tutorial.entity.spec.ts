@@ -2,7 +2,7 @@ import { InMemoryTutorialRepository } from '../../infra/database/memory/in-memor
 import { Tutorial } from '../../domain/entity/tutorial.entity';
 import { DifficultyLevel } from '../../domain/interface/difiiculty-level-enum';
 
-describe('InMemoryTutorialRepository', () => {
+describe('Tutorial Entity', () => {
   let inMemoryTutorialRepository: InMemoryTutorialRepository;
   let tutorial: Tutorial;
 
