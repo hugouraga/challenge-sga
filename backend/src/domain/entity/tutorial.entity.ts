@@ -51,8 +51,9 @@ export class Tutorial {
     creatorId: string,
   ): Tutorial {
     const now = new Date();
+    const id = randomUUID();
     return new Tutorial({
-      id: randomUUID(),
+      id,
       title,
       summary,
       estimatedDuration,
@@ -114,34 +115,49 @@ export class Tutorial {
     return this._isDeleted;
   }
 
-  public updateTitle(title: string): void {
+  private updateTitle(title: string): void {
     this._title = title;
     this._updatedAt = new Date();
   }
 
-  public updateSummary(summary: string): void {
+  private updateSummary(summary: string): void {
     this._summary = summary;
     this._updatedAt = new Date();
   }
 
-  public updateEstimatedDuration(estimatedDuration: string): void {
+  private updateEstimatedDuration(estimatedDuration: string): void {
     this._estimatedDuration = estimatedDuration;
     this._updatedAt = new Date();
   }
 
-  public updateRequirements(requirements: string[]): void {
+  private updateRequirements(requirements: string[]): void {
     this._requirements = requirements;
     this._updatedAt = new Date();
   }
 
-  public updateDifficultyLevel(difficultyLevel: DifficultyLevel): void {
+  private updateDifficultyLevel(difficultyLevel: DifficultyLevel): void {
     this._difficultyLevel = difficultyLevel;
     this._updatedAt = new Date();
   }
 
-  public updateTags(tags: string[]): void {
+  private updateTags(tags: string[]): void {
     this._tags = tags;
     this._updatedAt = new Date();
+  }
+
+  public update(updatedTutorial: Partial<Tutorial>): void {
+    if (updatedTutorial.title !== undefined)
+      this.updateTitle(updatedTutorial.title);
+    if (updatedTutorial.summary !== undefined)
+      this.updateSummary(updatedTutorial.summary);
+    if (updatedTutorial.estimatedDuration !== undefined)
+      this.updateEstimatedDuration(updatedTutorial.estimatedDuration);
+    if (updatedTutorial.requirements !== undefined)
+      this.updateRequirements(updatedTutorial.requirements);
+    if (updatedTutorial.difficultyLevel !== undefined)
+      this.updateDifficultyLevel(updatedTutorial.difficultyLevel);
+    if (updatedTutorial.tags !== undefined)
+      this.updateTags(updatedTutorial.tags);
   }
 
   public markAsDeleted(): void {
