@@ -33,14 +33,4 @@ export class InMemoryUserRepository implements UserRepository {
     this.userList[index] = currentUser;
     return currentUser;
   }
-
-  async signIn(email: string, password: string): Promise<User> {
-    const user = this.userList.find((user) => user.email === email);
-    if (!user) throw new Error('Invalid email or password');
-
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) throw new Error('Invalid email or password');
-
-    return user;
-  }
 }

@@ -10,15 +10,11 @@ export class CreateUserUseCase {
   async execute(name: string, email: string, password: string): Promise<User> {
     try {
       const existingUser = await this.userRepository.getByEmail(email);
-      if (existingUser) {
-        throw new CustomError('Email already in use', 400);
-      }
+      if (existingUser) throw new CustomError('Email already in use', 400);
       const user = await User.createNew(name, email, password);
       return await this.userRepository.create(user);
     } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
+      if (error instanceof CustomError) throw error;
       throw new CustomError('Error creating user', 500);
     }
   }

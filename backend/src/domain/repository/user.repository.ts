@@ -5,5 +5,4 @@ export abstract class UserRepository {
   abstract getByEmail(email: string): Promise<User | null>;
   abstract create(user: User): Promise<User>;
   abstract update(id: string, updatedUser: Partial<User>): Promise<User>;
-  abstract signIn(email: string, password: string): Promise<User>;
 }
