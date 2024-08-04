@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
-import { DifficultyLevel } from '../interface/difiiculty-level-enum';
-import { TutorialInterface } from '../interface/tutorial-interface';
+import { DifficultyLevel } from '@/domain/interface/difiiculty-level-enum';
+import { TutorialInterface } from '@/domain/interface/tutorial-interface';
 
 export class Tutorial {
   private readonly _id: string;
