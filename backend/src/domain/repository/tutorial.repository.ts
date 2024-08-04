@@ -1,5 +1,5 @@
 import { Tutorial } from '@/domain/entity/tutorial.entity';
-import { DifficultyLevel } from '@/domain/interface/difiiculty-level-enum';
+import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 
 export abstract class TutorialRepository {
   abstract getAll(

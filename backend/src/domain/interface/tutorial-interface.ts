@@ -1,4 +1,4 @@
-import { DifficultyLevel } from './difiiculty-level-enum';
+import { DifficultyLevel } from '../../utils/enum/difiiculty-level-enum';
 
 export interface TutorialInterface {
   id: string;
