@@ -14,21 +14,23 @@ describe.only('Get User', () => {
 
   it('should return a user with valid ID', async () => {
     const user = await User.createNew(
-      'Hugo uraga',
+      'Hugo Uraga',
       'hugouraga61@gmail.com',
       'password123',
     );
     await userRepository.create(user);
 
-    const foundUser = await getUserUseCase.execute(user.id);
+    const userInput = { userId: user.id };
+    const foundUser = await getUserUseCase.execute(userInput);
     expect(foundUser).toBeDefined();
     expect(foundUser.id).toBe(user.id);
-    expect(foundUser.name).toBe('Hugo uraga');
+    expect(foundUser.name).toBe('Hugo Uraga');
     expect(foundUser.email).toBe('hugouraga61@gmail.com');
   });
 
   it('should throw an error if user is not found', async () => {
-    await expect(getUserUseCase.execute('nonexistent-id')).rejects.toThrow(
+    const userInput = { userId: 'nonexistent-id' };
+    await expect(getUserUseCase.execute(userInput)).rejects.toThrow(
       CustomError,
     );
   });

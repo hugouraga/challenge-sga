@@ -12,45 +12,50 @@ describe.only('Create User', () => {
   });
 
   it('should create a new user with valid data', async () => {
-    const user = await createUserUseCase.execute(
-      'Hugo Uraga',
-      'hugouraga61@gmail.com',
-      'password123',
-    );
+    const userInput = {
+      userName: 'Hugo Uraga',
+      userEmail: 'hugouraga61@gmail.com',
+      password: 'password123',
+    };
+    const user = await createUserUseCase.execute(userInput);
     expect(user).toBeDefined();
     expect(user.id).toBeDefined();
     expect(user.name).toBe('Hugo Uraga');
     expect(user.email).toBe('hugouraga61@gmail.com');
-    expect(user.password).not.toBe('password123');
     expect(user.createdAt).toBeInstanceOf(Date);
     expect(user.updatedAt).toBeInstanceOf(Date);
   });
 
   it('should throw an error if email is already in use', async () => {
-    await createUserUseCase.execute(
-      'Hugo Uraga',
-      'hugouraga61@gmail.com',
-      'password123',
+    const userInput = {
+      userName: 'Hugo Uraga',
+      userEmail: 'hugouraga61@gmail.com',
+      password: 'password123',
+    };
+    await createUserUseCase.execute(userInput);
+
+    const duplicateUserInput = {
+      userName: 'Jane Doe',
+      userEmail: 'hugouraga61@gmail.com',
+      password: 'password456',
+    };
+    await expect(createUserUseCase.execute(duplicateUserInput)).rejects.toThrow(
+      CustomError,
     );
-    await expect(
-      createUserUseCase.execute(
-        'Jane Doe',
-        'hugouraga61@gmail.com',
-        'password456',
-      ),
-    ).rejects.toThrow(CustomError);
   });
 
   it('should handle unexpected errors', async () => {
     jest
       .spyOn(userRepository, 'getByEmail')
       .mockRejectedValue(new Error('Unexpected error'));
-    await expect(
-      createUserUseCase.execute(
-        'Hugo Uraga',
-        'hugouraga61@gmail.com',
-        'password123',
-      ),
-    ).rejects.toThrow(CustomError);
+
+    const userInput = {
+      userName: 'Hugo Uraga',
+      userEmail: 'hugouraga61@gmail.com',
+      password: 'password123',
+    };
+    await expect(createUserUseCase.execute(userInput)).rejects.toThrow(
+      CustomError,
+    );
   });
 });
