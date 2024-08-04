@@ -13,14 +13,14 @@ describe.only('Create User', () => {
 
   it('should create a new user with valid data', async () => {
     const user = await createUserUseCase.execute(
-      'John Doe',
-      'john@example.com',
+      'Hugo Uraga',
+      'hugouraga61@gmail.com',
       'password123',
     );
     expect(user).toBeDefined();
     expect(user.id).toBeDefined();
-    expect(user.name).toBe('John Doe');
-    expect(user.email).toBe('john@example.com');
+    expect(user.name).toBe('Hugo Uraga');
+    expect(user.email).toBe('hugouraga61@gmail.com');
     expect(user.password).not.toBe('password123');
     expect(user.createdAt).toBeInstanceOf(Date);
     expect(user.updatedAt).toBeInstanceOf(Date);
@@ -28,12 +28,16 @@ describe.only('Create User', () => {
 
   it('should throw an error if email is already in use', async () => {
     await createUserUseCase.execute(
-      'John Doe',
-      'john@example.com',
+      'Hugo Uraga',
+      'hugouraga61@gmail.com',
       'password123',
     );
     await expect(
-      createUserUseCase.execute('Jane Doe', 'john@example.com', 'password456'),
+      createUserUseCase.execute(
+        'Jane Doe',
+        'hugouraga61@gmail.com',
+        'password456',
+      ),
     ).rejects.toThrow(CustomError);
   });
 
@@ -42,7 +46,11 @@ describe.only('Create User', () => {
       .spyOn(userRepository, 'getByEmail')
       .mockRejectedValue(new Error('Unexpected error'));
     await expect(
-      createUserUseCase.execute('John Doe', 'john@example.com', 'password123'),
+      createUserUseCase.execute(
+        'Hugo Uraga',
+        'hugouraga61@gmail.com',
+        'password123',
+      ),
     ).rejects.toThrow(CustomError);
   });
 });
