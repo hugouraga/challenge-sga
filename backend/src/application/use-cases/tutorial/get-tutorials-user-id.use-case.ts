@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
+import { TutorialRepository } from '@/application/repository/tutorial.repository';
 
 interface GetTutorialsByUserIdUseCaseInput {
   userId: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '@/domain/repository/user.repository';
 import { User } from '@/domain/entity/user.entity';
 import { CustomError } from '@/utils/error/custom.error';
+import { UserRepository } from '@/application/repository/user.repository';
 
 interface CreateUserUseCaseInput {
   userName: string;

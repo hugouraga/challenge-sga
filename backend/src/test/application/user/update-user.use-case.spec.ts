@@ -1,4 +1,4 @@
-import { UpdateUserUseCase } from '@/application/user/update-user.use-case';
+import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-case';
 import { User } from '@/domain/entity/user.entity';
 import { InMemoryUserRepository } from '@/infra/database/memory/in-memory-user-repository';
 import { CustomError } from '@/utils/error/custom.error';

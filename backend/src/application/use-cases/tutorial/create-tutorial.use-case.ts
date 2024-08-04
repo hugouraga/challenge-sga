@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { TutorialRepository } from '@/domain/repository/tutorial.repository';
-import { UserRepository } from '@/domain/repository/user.repository';
-import { Tutorial } from '@/domain/entity/tutorial.entity';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 import { CustomError } from '@/utils/error/custom.error';
+import { TutorialRepository } from '@/application/repository/tutorial.repository';
+import { UserRepository } from '@/application/repository/user.repository';
+import { Tutorial } from '@/domain/entity/tutorial.entity';
 
 interface CreateTutorialUseCaseInput {
   title: string;

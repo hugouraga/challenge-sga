@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 import { CustomError } from '@/utils/error/custom.error';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
+import { TutorialRepository } from '@/application/repository/tutorial.repository';
 
 interface GetTutorialUseCaseInput {
   tutorialId: string;

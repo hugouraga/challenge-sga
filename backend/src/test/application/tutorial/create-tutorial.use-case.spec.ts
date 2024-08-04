@@ -1,4 +1,4 @@
-import { CreateTutorialUseCase } from '@/application/tutorial/create-tutorial.use-case';
+import { CreateTutorialUseCase } from '@/application/use-cases/tutorial/create-tutorial.use-case';
 import { InMemoryTutorialRepository } from '@/infra/database/memory/in-memory-tutorial.repository';
 import { InMemoryUserRepository } from '@/infra/database/memory/in-memory-user-repository';
 import { User } from '@/domain/entity/user.entity';

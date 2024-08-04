@@ -1,8 +1,8 @@
-import { GetTutorialUseCase } from '@/application/tutorial/get-tutorial-id.use-case';
+import { GetTutorialUseCase } from '@/application/use-cases/tutorial/get-tutorial-id.use-case';
 import { InMemoryTutorialRepository } from '@/infra/database/memory/in-memory-tutorial.repository';
 import { InMemoryUserRepository } from '@/infra/database/memory/in-memory-user-repository';
 import { User } from '@/domain/entity/user.entity';
-import { Tutorial } from '@/domain/entity/tutorial.entity';
+import { Tutorial } from '@/application/entity/tutorial.entity';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 
 let getTutorialUseCase: GetTutorialUseCase;

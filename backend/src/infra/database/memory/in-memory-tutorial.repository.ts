@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
-
 import {
   TutorialFilter,
-  TutorialRepository,
   TutorialPagination,
-} from '@/domain/repository/tutorial.repository';
+  TutorialRepository,
+} from '@/application/repository/tutorial.repository';
 import { Tutorial } from '@/domain/entity/tutorial.entity';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class InMemoryTutorialRepository implements TutorialRepository {

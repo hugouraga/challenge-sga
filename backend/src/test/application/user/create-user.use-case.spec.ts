@@ -1,4 +1,4 @@
-import { CreateUserUseCase } from '@/application/user/create-user.use-case';
+import { CreateUserUseCase } from '@/application/use-cases/user/create-user.use-case';
 import { InMemoryUserRepository } from '@/infra/database/memory/in-memory-user-repository';
 import { CustomError } from '@/utils/error/custom.error';
 
