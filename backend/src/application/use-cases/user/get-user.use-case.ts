@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CustomError } from '@/utils/error/custom.error';
-import { UserRepository } from '@/application/repository/user.repository';
+import { UserRepository } from '@/domain/repository/user.repository';
 
 interface GetUserUseCaseInput {
   userId: string;
