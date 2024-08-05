@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CustomError } from '@/utils/error/custom.error';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
-import { TutorialRepository } from '@/application/repository/tutorial.repository';
+import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 
 interface UpdateTutorialUseCaseInput {
   tutorialId: string;
   title?: string;
   summary?: string;
   estimatedDuration?: string;
-  requirements?: string[];
   difficultyLevel?: DifficultyLevel;
-  tags?: string[];
   isDeleted?: boolean;
+  creatorId?: string;
 }
 
 interface UpdateTutorialUseCaseOutput {
@@ -19,9 +18,7 @@ interface UpdateTutorialUseCaseOutput {
   title: string;
   summary: string;
   estimatedDuration: string;
-  requirements: string[];
   difficultyLevel: DifficultyLevel;
-  tags: string[];
   creatorId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -37,10 +34,9 @@ export class UpdateTutorialUseCase {
     title,
     summary,
     estimatedDuration,
-    requirements,
     difficultyLevel,
-    tags,
     isDeleted,
+    creatorId,
   }: UpdateTutorialUseCaseInput): Promise<UpdateTutorialUseCaseOutput> {
     const tutorial = await this.tutorialRepository.getById(tutorialId);
     if (!tutorial) {
@@ -51,10 +47,9 @@ export class UpdateTutorialUseCase {
       title,
       summary,
       estimatedDuration,
-      requirements,
       difficultyLevel,
-      tags,
       isDeleted,
+      creatorId,
     });
 
     const updatedTutorial = await this.tutorialRepository.update(
@@ -67,9 +62,7 @@ export class UpdateTutorialUseCase {
       title: updatedTutorial.title,
       summary: updatedTutorial.summary,
       estimatedDuration: updatedTutorial.estimatedDuration,
-      requirements: updatedTutorial.requirements,
       difficultyLevel: updatedTutorial.difficultyLevel,
-      tags: updatedTutorial.tags,
       creatorId: updatedTutorial.creatorId,
       createdAt: updatedTutorial.createdAt,
       updatedAt: updatedTutorial.updatedAt,

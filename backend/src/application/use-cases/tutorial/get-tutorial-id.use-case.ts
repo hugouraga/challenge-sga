@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CustomError } from '@/utils/error/custom.error';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
-import { TutorialRepository } from '@/application/repository/tutorial.repository';
+import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 
 interface GetTutorialUseCaseInput {
   tutorialId: string;
@@ -12,9 +12,7 @@ interface GetTutorialUseCaseOutput {
   title: string;
   summary: string;
   estimatedDuration: string;
-  requirements: string[];
   difficultyLevel: DifficultyLevel;
-  tags: string[];
   creatorId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -38,9 +36,7 @@ export class GetTutorialUseCase {
       title: tutorial.title,
       summary: tutorial.summary,
       estimatedDuration: tutorial.estimatedDuration,
-      requirements: tutorial.requirements,
       difficultyLevel: tutorial.difficultyLevel,
-      tags: tutorial.tags,
       creatorId: tutorial.creatorId,
       createdAt: tutorial.createdAt,
       updatedAt: tutorial.updatedAt,

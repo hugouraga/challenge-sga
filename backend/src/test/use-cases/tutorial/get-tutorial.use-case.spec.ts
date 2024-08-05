@@ -28,9 +28,7 @@ describe.only('Get Tutorial', () => {
       'Original Title',
       'Original Summary',
       '2 hours',
-      ['Node.js', 'TypeScript'],
       DifficultyLevel.Beginner,
-      ['node', 'typescript'],
       user.id,
     );
     await tutorialRepository.create(tutorial);
@@ -43,9 +41,7 @@ describe.only('Get Tutorial', () => {
     expect(foundTutorial.title).toBe(tutorial.title);
     expect(foundTutorial.summary).toBe(tutorial.summary);
     expect(foundTutorial.estimatedDuration).toBe(tutorial.estimatedDuration);
-    expect(foundTutorial.requirements).toEqual(tutorial.requirements);
     expect(foundTutorial.difficultyLevel).toBe(tutorial.difficultyLevel);
-    expect(foundTutorial.tags).toEqual(tutorial.tags);
     expect(foundTutorial.creatorId).toBe(tutorial.creatorId);
     expect(foundTutorial.createdAt).toBeInstanceOf(Date);
     expect(foundTutorial.updatedAt).toBeInstanceOf(Date);

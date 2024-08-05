@@ -5,9 +5,7 @@ export interface TutorialInterface {
   title: string;
   summary: string;
   estimatedDuration: string;
-  requirements: string[];
   difficultyLevel: DifficultyLevel;
-  tags: string[];
   creatorId: string;
   createdAt: Date;
   updatedAt: Date;

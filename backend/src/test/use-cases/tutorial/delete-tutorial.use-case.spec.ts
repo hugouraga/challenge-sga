@@ -28,9 +28,7 @@ describe.only('Delete Tutorial', () => {
       'Original Title',
       'Original Summary',
       '2 hours',
-      ['Node.js', 'TypeScript'],
       DifficultyLevel.Beginner,
-      ['node', 'typescript'],
       user.id,
     );
     await tutorialRepository.create(tutorial);

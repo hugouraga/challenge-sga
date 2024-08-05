@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CustomError } from '@/utils/error/custom.error';
-import { TutorialRepository } from '@/application/repository/tutorial.repository';
+import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 
 interface DeleteTutorialUseCaseInput {
   tutorialId: string;

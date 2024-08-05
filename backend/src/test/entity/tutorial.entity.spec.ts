@@ -12,9 +12,7 @@ describe('Tutorial Entity', () => {
       'Backend - Node',
       'Summary 1',
       '30 minutes',
-      ['Javascript'],
       DifficultyLevel.Beginner,
-      ['JS'],
       'Creator 1',
     );
   });
@@ -26,9 +24,7 @@ describe('Tutorial Entity', () => {
     expect(created.title).toEqual('Backend - Node');
     expect(created.summary).toEqual('Summary 1');
     expect(created.estimatedDuration).toEqual('30 minutes');
-    expect(created.requirements).toEqual(['Javascript']);
     expect(created.difficultyLevel).toEqual(DifficultyLevel.Beginner);
-    expect(created.tags).toEqual(['JS']);
     expect(created.creatorId).toEqual('Creator 1');
     expect(created.isDeleted).toEqual(false);
   });
@@ -40,9 +36,7 @@ describe('Tutorial Entity', () => {
       title: 'Updated Title',
       summary: 'Updated Summary',
       estimatedDuration: '45 minutes',
-      requirements: ['Updated Requirement 1'],
       difficultyLevel: DifficultyLevel.Intermediate,
-      tags: ['Updated Tag1'],
     };
     await inMemoryTutorialRepository.update(tutorial.id, updatedPartial);
     const updated = await inMemoryTutorialRepository.getById(tutorial.id);
@@ -50,9 +44,7 @@ describe('Tutorial Entity', () => {
     expect(updated.title).toEqual(updatedPartial.title);
     expect(updated.summary).toEqual(updatedPartial.summary);
     expect(updated.estimatedDuration).toEqual(updatedPartial.estimatedDuration);
-    expect(updated.requirements).toEqual(updatedPartial.requirements);
     expect(updated.difficultyLevel).toEqual(updatedPartial.difficultyLevel);
-    expect(updated.tags).toEqual(updatedPartial.tags);
   });
 
   it('should delete a tutorial', async () => {
@@ -68,9 +60,7 @@ describe('Tutorial Entity', () => {
       'Title 2',
       'Summary 2',
       '40 minutes',
-      ['Requirement A'],
       DifficultyLevel.Intermediate,
-      ['Tag2'],
       'Creator 2',
     );
     await inMemoryTutorialRepository.create(tutorial);

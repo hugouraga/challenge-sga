@@ -8,9 +8,7 @@ export class Tutorial {
   private _title: string;
   private _summary: string;
   private _estimatedDuration: string;
-  private _requirements: string[];
   private _difficultyLevel: DifficultyLevel;
-  private _tags: string[];
   private _creatorId: string;
   private _createdAt: Date;
   private _updatedAt: Date;
@@ -21,9 +19,7 @@ export class Tutorial {
     title,
     summary,
     estimatedDuration,
-    requirements,
     difficultyLevel,
-    tags,
     creatorId,
     createdAt,
     updatedAt,
@@ -38,9 +34,7 @@ export class Tutorial {
     this._title = title;
     this._summary = summary;
     this._estimatedDuration = estimatedDuration;
-    this._requirements = requirements;
     this._difficultyLevel = difficultyLevel;
-    this._tags = tags;
     this._creatorId = creatorId;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
@@ -51,9 +45,7 @@ export class Tutorial {
     title: string,
     summary: string,
     estimatedDuration: string,
-    requirements: string[],
     difficultyLevel: DifficultyLevel,
-    tags: string[],
     creatorId: string,
   ): Tutorial {
     const now = new Date();
@@ -63,9 +55,7 @@ export class Tutorial {
       title,
       summary,
       estimatedDuration,
-      requirements,
       difficultyLevel,
-      tags,
       creatorId,
       createdAt: now,
       updatedAt: now,
@@ -93,16 +83,8 @@ export class Tutorial {
     return this._estimatedDuration;
   }
 
-  public get requirements(): string[] {
-    return this._requirements;
-  }
-
   public get difficultyLevel(): DifficultyLevel {
     return this._difficultyLevel;
-  }
-
-  public get tags(): string[] {
-    return this._tags;
   }
 
   public get creatorId(): string {
@@ -155,8 +137,6 @@ export class Tutorial {
       this.validateEstimatedDuration(updatedTutorial.estimatedDuration);
       this.updateEstimatedDuration(updatedTutorial.estimatedDuration);
     }
-    if (updatedTutorial.requirements !== undefined)
-      this.updateRequirements(updatedTutorial.requirements);
     if (updatedTutorial.difficultyLevel !== undefined) {
       this.validateDifficultyLevel(updatedTutorial.difficultyLevel);
       this.updateDifficultyLevel(updatedTutorial.difficultyLevel);
@@ -165,8 +145,6 @@ export class Tutorial {
       this.validateCreatorId(updatedTutorial.creatorId);
       this.updateCreatorId(updatedTutorial.creatorId);
     }
-    if (updatedTutorial.tags !== undefined)
-      this.updateTags(updatedTutorial.tags);
   }
 
   private updateTitle(title: string): void {
@@ -184,18 +162,8 @@ export class Tutorial {
     this._updatedAt = new Date();
   }
 
-  private updateRequirements(requirements: string[]): void {
-    this._requirements = requirements;
-    this._updatedAt = new Date();
-  }
-
   private updateDifficultyLevel(difficultyLevel: DifficultyLevel): void {
     this._difficultyLevel = difficultyLevel;
-    this._updatedAt = new Date();
-  }
-
-  private updateTags(tags: string[]): void {
-    this._tags = tags;
     this._updatedAt = new Date();
   }
 

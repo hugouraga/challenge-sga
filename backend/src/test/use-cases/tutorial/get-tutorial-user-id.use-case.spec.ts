@@ -25,27 +25,21 @@ describe.only('Get Tutorial', () => {
       'Original Title',
       'Original Summary',
       '2 hours',
-      ['Node.js', 'TypeScript'],
       DifficultyLevel.Beginner,
-      ['node', 'typescript'],
       user.id,
     );
     const tutorial2 = Tutorial.createNew(
       'Original Title 2',
       'Original Summary',
       '2 hours',
-      ['Node.js', 'TypeScript'],
       DifficultyLevel.Beginner,
-      ['node', 'typescript'],
       user.id,
     );
     const tutorial3 = Tutorial.createNew(
       'Original Title 3',
       'Original Summary',
       '2 hours',
-      ['Node.js', 'TypeScript'],
       DifficultyLevel.Beginner,
-      ['node', 'typescript'],
       user.id,
     );
 

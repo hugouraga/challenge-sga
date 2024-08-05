@@ -2,7 +2,7 @@ import {
   TutorialFilter,
   TutorialPagination,
   TutorialRepository,
-} from '@/application/repository/tutorial.repository';
+} from '@/domain/repository/tutorial.repository';
 import { Tutorial } from '@/domain/entity/tutorial.entity';
 import { Injectable } from '@nestjs/common';
 
@@ -79,11 +79,6 @@ export class InMemoryTutorialRepository implements TutorialRepository {
     if (filters.difficultyLevel) {
       filteredTutorials = filteredTutorials.filter(
         (tutorial) => tutorial.difficultyLevel === filters.difficultyLevel,
-      );
-    }
-    if (filters.tags && filters.tags.length > 0) {
-      filteredTutorials = filteredTutorials.filter((tutorial) =>
-        filters.tags.some((tag) => tutorial.tags.includes(tag)),
       );
     }
     return filteredTutorials;
