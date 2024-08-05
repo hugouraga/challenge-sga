@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { UserInterface } from '@/domain/interface/user-interface';
+import { CustomError } from '@/utils/error/custom.error';
 
 export class User {
   private readonly _id: string;
@@ -52,21 +53,23 @@ export class User {
   }
 
   private validateName(name: string): void {
-    if (!name.includes(' ')) {
-      throw new Error('Name must contain both first and last name');
+    if (name !== undefined && !name.includes(' ')) {
+      throw new CustomError('Name must contain both first and last name', 400);
     }
   }
 
   private validateEmail(email: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new Error('Invalid email address');
+    if (email !== undefined) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new CustomError('Invalid email address', 400);
+      }
     }
   }
 
   private validatePassword(password: string): void {
-    if (!password || password.length < 8) {
-      throw new Error('Password must be at least 8 characters long');
+    if (password !== undefined && password.length < 8) {
+      throw new CustomError('Password must be at least 8 characters long', 400);
     }
   }
 
