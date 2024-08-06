@@ -1,21 +1,15 @@
-import { GetTutorialUseCase } from '@/application/use-cases/tutorial/get-tutorial-id.use-case';
+import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
 import { CustomError } from '@/utils/error/custom.error';
-import {
-  Controller,
-  Get,
-  Query,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 
-@Controller('tutorials')
+@Controller('tutorial')
 export class ListTutorialsController {
-  constructor(private readonly listTutorialsUseCase: GetTutorialUseCase) {}
+  constructor(private readonly listTutorialsUseCase: GetTutorialsUseCase) {}
 
   @Get()
-  async list(@Query() query: any): Promise<any> {
+  async list(): Promise<any> {
     try {
-      const tutorials = await this.listTutorialsUseCase.execute(query);
+      const tutorials = await this.listTutorialsUseCase.execute();
       return tutorials;
     } catch (error) {
       if (error instanceof CustomError) {

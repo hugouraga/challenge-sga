@@ -3,8 +3,8 @@ import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 
 export abstract class TutorialRepository {
   abstract getAll(
-    filters: TutorialFilter,
-    pagination: TutorialPagination,
+    filters?: TutorialFilter,
+    pagination?: TutorialPagination,
   ): Promise<Tutorial[]>;
   abstract getById(id: string): Promise<Tutorial>;
   abstract getByUserId(userId: string): Promise<Tutorial[]>;

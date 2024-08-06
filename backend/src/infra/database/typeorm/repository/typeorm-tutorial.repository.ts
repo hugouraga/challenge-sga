@@ -20,38 +20,40 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
   ) {}
 
   async getAll(
-    filters: TutorialFilter,
-    pagination: TutorialPagination,
+    filters?: TutorialFilter,
+    pagination?: TutorialPagination,
   ): Promise<DomainTutorial[]> {
     const query = this.tutorialRepository.createQueryBuilder('tutorial');
 
-    if (filters.title) {
-      query.andWhere('tutorial.title LIKE :title', {
-        title: `%${filters.title}%`,
-      });
-    }
-    if (filters.summary) {
-      query.andWhere('tutorial.summary LIKE :summary', {
-        summary: `%${filters.summary}%`,
-      });
-    }
-    if (filters.creatorId) {
-      query.andWhere('tutorial.creatorId = :creatorId', {
-        creatorId: filters.creatorId,
-      });
-    }
-    if (filters.difficultyLevel) {
-      query.andWhere('tutorial.difficultyLevel = :difficultyLevel', {
-        difficultyLevel: filters.difficultyLevel,
-      });
-    }
-    if (filters.tags && filters.tags.length > 0) {
-      query.andWhere('tutorial.tags && ARRAY[:...tags]', {
-        tags: filters.tags,
-      });
+    if (filters) {
+      if (filters.title) {
+        query.andWhere('tutorial.title LIKE :title', {
+          title: `%${filters.title}%`,
+        });
+      }
+      if (filters.summary) {
+        query.andWhere('tutorial.summary LIKE :summary', {
+          summary: `%${filters.summary}%`,
+        });
+      }
+      if (filters.creatorId) {
+        query.andWhere('tutorial.creatorId = :creatorId', {
+          creatorId: filters.creatorId,
+        });
+      }
+      if (filters.difficultyLevel) {
+        query.andWhere('tutorial.difficultyLevel = :difficultyLevel', {
+          difficultyLevel: filters.difficultyLevel,
+        });
+      }
+      if (filters.tags && filters.tags.length > 0) {
+        query.andWhere('tutorial.tags && ARRAY[:...tags]', {
+          tags: filters.tags,
+        });
+      }
     }
 
-    query.skip(pagination.offset).take(pagination.limit);
+    if (pagination) query.skip(pagination.offset).take(pagination.limit);
 
     const tutorials = await query.getMany();
     return tutorials.map((tutorial) => tutorial.toDomain());

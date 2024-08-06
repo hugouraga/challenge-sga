@@ -15,6 +15,7 @@ import { TypeOrmTutorialRepository } from '../database/typeorm/repository/typeor
 import { TutorialOrm } from '../database/typeorm/entity/tutorial.orm-entity';
 import { UserOrm } from '../database/typeorm/entity/user.orm-entity';
 import { UserModule } from './_user.module';
+import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TutorialOrm, UserOrm]), UserModule],
@@ -31,6 +32,7 @@ import { UserModule } from './_user.module';
     DeleteTutorialUseCase,
     UpdateTutorialUseCase,
     GetTutorialsByUserIdUseCase,
+    GetTutorialsUseCase,
     { provide: TutorialRepository, useClass: TypeOrmTutorialRepository },
   ],
 })
