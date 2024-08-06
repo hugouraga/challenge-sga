@@ -4,6 +4,8 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { CreateUserUseCase } from '@/application/use-cases/user/create-user.use-case';
 import { CreateUserRequest } from './dtos/create-user.request';
@@ -14,6 +16,7 @@ export class UserCreateController {
   constructor(private readonly createUser: CreateUserUseCase) {}
 
   @Post('')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() createUserRequest: CreateUserRequest): Promise<any> {
     try {
       const registerUser = await this.createUser.execute({

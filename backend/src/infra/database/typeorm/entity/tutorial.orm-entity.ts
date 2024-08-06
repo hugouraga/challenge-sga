@@ -24,37 +24,37 @@ export class TutorialOrm {
   summary: string;
 
   @Column()
-  estimatedDuration: string;
+  estimated_duration: string;
 
   @Column({
     type: 'enum',
     enum: DifficultyLevel,
   })
-  difficultyLevel: DifficultyLevel;
+  difficulty_level: DifficultyLevel;
 
   @Column('varchar', { length: 36 })
-  creatorId: string;
+  creator_id: string;
 
   @ManyToOne(() => UserOrm, (user) => user.tutorials, { eager: true })
-  @JoinColumn({ name: 'creatorId' })
+  @JoinColumn({ name: 'creator_id' })
   creator: UserOrm;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   toDomain(): DomainTutorial {
     return DomainTutorial.fromDatabase({
       id: this.id,
       title: this.title,
       summary: this.summary,
-      estimatedDuration: this.estimatedDuration,
-      difficultyLevel: this.difficultyLevel,
-      creatorId: this.creatorId,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      estimatedDuration: this.estimated_duration,
+      difficultyLevel: this.difficulty_level,
+      creatorId: this.creator_id,
+      createdAt: this.created_at,
+      updatedAt: this.updated_at,
       isDeleted: false,
     });
   }
@@ -67,12 +67,11 @@ export class TutorialOrm {
     tutorialOrm.id = domainTutorial.id;
     tutorialOrm.title = domainTutorial.title;
     tutorialOrm.summary = domainTutorial.summary;
-    tutorialOrm.estimatedDuration = domainTutorial.estimatedDuration;
-
-    tutorialOrm.difficultyLevel = domainTutorial.difficultyLevel;
-    tutorialOrm.creatorId = creatorId;
-    tutorialOrm.createdAt = domainTutorial.createdAt;
-    tutorialOrm.updatedAt = domainTutorial.updatedAt;
+    tutorialOrm.estimated_duration = domainTutorial.estimatedDuration;
+    tutorialOrm.difficulty_level = domainTutorial.difficultyLevel;
+    tutorialOrm.creator_id = creatorId;
+    tutorialOrm.created_at = domainTutorial.createdAt;
+    tutorialOrm.updated_at = domainTutorial.updatedAt;
     return tutorialOrm;
   }
 }

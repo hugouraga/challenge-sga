@@ -41,10 +41,18 @@ export class TypeOrmUserRepository implements UserRepository {
     const userOrm = await this.repository.findOne({
       where: { id },
     });
+
     if (!userOrm) {
       throw new Error('User not found');
     }
-    Object.assign(userOrm, updatedUser);
+
+    Object.assign(userOrm, {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      password: updatedUser.password,
+      updatedAt: updatedUser.updatedAt,
+    });
+
     const savedUserOrm = await this.repository.save(userOrm);
     return savedUserOrm.toDomain();
   }

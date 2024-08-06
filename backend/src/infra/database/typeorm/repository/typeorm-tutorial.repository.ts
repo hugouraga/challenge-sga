@@ -64,7 +64,7 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
 
   async getByUserId(userId: string): Promise<DomainTutorial[]> {
     const tutorials = await this.tutorialRepository.find({
-      where: { creatorId: userId },
+      where: { creator_id: userId },
     });
     return tutorials.map((tutorial) => tutorial.toDomain());
   }

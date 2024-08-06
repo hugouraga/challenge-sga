@@ -1,4 +1,4 @@
-import { User } from '../../../domain/entity/user.entity';
+import { User } from '@/domain/entity/user.entity';
 
 describe('User Entity', () => {
   it('should create a new user with valid data', async () => {

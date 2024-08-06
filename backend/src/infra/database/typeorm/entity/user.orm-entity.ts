@@ -27,10 +27,10 @@ export class UserOrm {
   tutorials: TutorialOrm[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   toDomain(): DomainUser {
     return DomainUser.fromDatabase({
@@ -38,8 +38,8 @@ export class UserOrm {
       name: this.name,
       email: this.email,
       password: this.password,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      createdAt: this.created_at,
+      updatedAt: this.updated_at,
     });
   }
 
@@ -49,8 +49,8 @@ export class UserOrm {
     userOrm.name = domainUser.name;
     userOrm.email = domainUser.email;
     userOrm.password = domainUser.password;
-    userOrm.createdAt = domainUser.createdAt;
-    userOrm.updatedAt = domainUser.updatedAt;
+    userOrm.created_at = domainUser.createdAt;
+    userOrm.updated_at = domainUser.updatedAt;
     return userOrm;
   }
 }
