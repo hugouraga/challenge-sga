@@ -4,12 +4,15 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { CreateTutorialUseCase } from '@/application/use-cases/tutorial/create-tutorial.use-case';
 import { CreateTutorialRequest } from './dtos/create-tutorial-request';
 import { CustomError } from '@/utils/error/custom.error';
 
 @Controller('tutorial')
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 export class CreateTutorialController {
   constructor(private readonly createTutorialUseCase: CreateTutorialUseCase) {}
 
@@ -23,7 +26,6 @@ export class CreateTutorialController {
       );
       return tutorial;
     } catch (error) {
-      console.log(error);
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);
       }

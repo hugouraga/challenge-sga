@@ -5,6 +5,8 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UpdateTutorialUseCase } from '@/application/use-cases/tutorial/update-tutorial.use-case';
 import { CustomError } from '@/utils/error/custom.error';
@@ -14,7 +16,8 @@ import { UpdateTutorialRequest } from './dtos/update-tutorial-request';
 export class UpdateTutorialController {
   constructor(private readonly updateTutorialUseCase: UpdateTutorialUseCase) {}
 
-  @Put(':id')
+  @Put('/edit/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async update(
     @Param('id') id: string,
     @Body() updateTutorialRequest: UpdateTutorialRequest,
@@ -33,6 +36,7 @@ export class UpdateTutorialController {
       });
       return { message: 'Tutorial atualizado com sucesso' };
     } catch (error) {
+      console.log(error);
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);
       }

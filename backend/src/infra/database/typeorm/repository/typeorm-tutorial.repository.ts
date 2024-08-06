@@ -89,7 +89,24 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
     id: string,
     updatedTutorial: Partial<DomainTutorial>,
   ): Promise<DomainTutorial> {
-    await this.tutorialRepository.update(id, updatedTutorial);
+    const tutorialOrm = await this.tutorialRepository.findOne({
+      where: { id },
+    });
+
+    if (!tutorialOrm) {
+      throw new Error('Tutorial not found');
+    }
+
+    Object.assign(tutorialOrm, {
+      title: updatedTutorial.title,
+      summary: updatedTutorial.summary,
+      creator_id: updatedTutorial.creatorId,
+      difficulty_level: updatedTutorial.difficultyLevel,
+      updated_at: updatedTutorial.updatedAt,
+      estimated_duration: updatedTutorial.estimatedDuration,
+    });
+
+    await this.tutorialRepository.update(id, tutorialOrm);
     const tutorial = await this.getById(id);
     return tutorial;
   }
