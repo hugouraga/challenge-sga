@@ -4,9 +4,9 @@ import { UserRepository } from '@/domain/repository/user.repository';
 
 interface UpdateUserUseCaseInput {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userPassword: string;
+  userEmail?: string;
+  userName?: string;
+  userPassword?: string;
 }
 
 interface UpdateUserUseCaseOutput {
@@ -34,7 +34,7 @@ export class UpdateUserUseCase {
       if (userWithSameEmail && userWithSameEmail.id !== userId)
         throw new CustomError('Email already in use', 400);
 
-      user.update({
+      await user.update({
         email: userEmail,
         name: userName,
         password: userPassword,

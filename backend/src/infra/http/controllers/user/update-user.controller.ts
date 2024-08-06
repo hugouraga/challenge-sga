@@ -12,12 +12,12 @@ import { CustomError } from '@/utils/error/custom.error';
 import { UpdateUserRequest } from './dtos/update-user.request';
 // import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
-@Controller('user/update/:id')
+@Controller('user')
 export class UserUpdateController {
   constructor(private updateUser: UpdateUserUseCase) {}
 
   // @UseGuards(JwtAuthGuard)
-  @Put('')
+  @Put('/update/:id')
   async update(
     @Param('id') id: string,
     @Body() updateUserRequest: UpdateUserRequest,

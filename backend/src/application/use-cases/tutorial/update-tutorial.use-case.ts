@@ -43,7 +43,7 @@ export class UpdateTutorialUseCase {
       throw new CustomError('Tutorial not found', 404);
     }
 
-    tutorial.update({
+    await tutorial.update({
       title,
       summary,
       estimatedDuration,

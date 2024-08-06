@@ -126,7 +126,7 @@ export class Tutorial {
       throw new CustomError('Creator ID cannot be empty', 400);
     }
   }
-  public update(updatedTutorial: Partial<Tutorial>): void {
+  public async update(updatedTutorial: Partial<Tutorial>): Promise<void> {
     if (updatedTutorial.title !== undefined) {
       this.validateTitle(updatedTutorial.title);
       this.updateTitle(updatedTutorial.title);

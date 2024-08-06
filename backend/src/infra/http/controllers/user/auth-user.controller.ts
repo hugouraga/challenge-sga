@@ -10,11 +10,11 @@ import { SignInUserUseCase } from '@/application/use-cases/user/sign-in-user.use
 import { CustomError } from '@/utils/error/custom.error';
 import { SignInUserRequest } from './dtos/auth-user.request';
 
-@Controller('user/signin')
+@Controller('user')
 export class UserSignInController {
   constructor(private readonly signInUserUseCase: SignInUserUseCase) {}
 
-  @Post('')
+  @Post('/signin')
   @HttpCode(HttpStatus.OK)
   async signin(@Body() signinRequest: SignInUserRequest): Promise<any> {
     try {

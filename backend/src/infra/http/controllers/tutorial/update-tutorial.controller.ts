@@ -36,7 +36,6 @@ export class UpdateTutorialController {
       });
       return { message: 'Tutorial atualizado com sucesso' };
     } catch (error) {
-      console.log(error);
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);
       }
