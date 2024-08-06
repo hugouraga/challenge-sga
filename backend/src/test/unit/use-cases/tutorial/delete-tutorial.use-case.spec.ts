@@ -36,9 +36,9 @@ describe.only('Delete Tutorial', () => {
     const tutorialInput = { tutorialId: tutorial.id };
     await deleteTutorialUseCase.execute(tutorialInput);
 
-    const updatedTutorial = await tutorialRepository.getById(tutorial.id);
-    expect(updatedTutorial).toBeDefined();
-    expect(updatedTutorial.isDeleted).toBe(true);
+    await expect(tutorialRepository.getById(tutorial.id)).rejects.toThrow(
+      Error,
+    );
   });
 
   it('should throw an error if tutorial is not found', async () => {
