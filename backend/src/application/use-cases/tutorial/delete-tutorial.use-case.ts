@@ -15,8 +15,6 @@ export class DeleteTutorialUseCase {
     if (!tutorial) {
       throw new CustomError('Tutorial not found', 404);
     }
-
-    tutorial.markAsDeleted();
-    await this.tutorialRepository.update(tutorialId, tutorial);
+    await this.tutorialRepository.delete(tutorialId);
   }
 }

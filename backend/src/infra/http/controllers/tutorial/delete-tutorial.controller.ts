@@ -12,7 +12,7 @@ import { CustomError } from '@/utils/error/custom.error';
 export class DeleteTutorialController {
   constructor(private readonly deleteTutorialUseCase: DeleteTutorialUseCase) {}
 
-  @Delete(':id')
+  @Delete('/delete/:id')
   async delete(@Param('id') id: string) {
     try {
       await this.deleteTutorialUseCase.execute({

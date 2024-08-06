@@ -39,6 +39,9 @@ export class TutorialOrm {
   @JoinColumn({ name: 'creator_id' })
   creator: UserOrm;
 
+  @Column('boolean')
+  is_deleted: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -72,6 +75,7 @@ export class TutorialOrm {
     tutorialOrm.creator_id = creatorId;
     tutorialOrm.created_at = domainTutorial.createdAt;
     tutorialOrm.updated_at = domainTutorial.updatedAt;
+    tutorialOrm.is_deleted = domainTutorial.isDeleted;
     return tutorialOrm;
   }
 }

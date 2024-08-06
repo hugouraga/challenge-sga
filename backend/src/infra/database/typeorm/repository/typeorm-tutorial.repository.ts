@@ -60,13 +60,15 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
   }
 
   async getById(id: string): Promise<DomainTutorial> {
-    const tutorial = await this.tutorialRepository.findOne({ where: { id } });
+    const tutorial = await this.tutorialRepository.findOne({
+      where: { id, is_deleted: false },
+    });
     return tutorial?.toDomain();
   }
 
   async getByUserId(userId: string): Promise<DomainTutorial[]> {
     const tutorials = await this.tutorialRepository.find({
-      where: { creator_id: userId },
+      where: { creator_id: userId, is_deleted: false },
     });
     return tutorials.map((tutorial) => tutorial.toDomain());
   }
@@ -104,6 +106,7 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
       difficulty_level: updatedTutorial.difficultyLevel,
       updated_at: updatedTutorial.updatedAt,
       estimated_duration: updatedTutorial.estimatedDuration,
+      is_deleted: updatedTutorial.isDeleted,
     });
 
     await this.tutorialRepository.update(id, tutorialOrm);
@@ -112,6 +115,6 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.tutorialRepository.softDelete(id);
+    await this.tutorialRepository.delete(id);
   }
 }
