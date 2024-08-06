@@ -15,7 +15,7 @@ export class UpdateTutorialRequest {
   estimatedDuration?: string;
 
   @IsOptional()
-  @IsEnum(DifficultyLevel, { message: 'Invalid difficulty level' })
+  @IsEnum(DifficultyLevel, { message: 'Nível de dificuldade inválido' })
   difficultyLevel?: DifficultyLevel;
 
   @IsOptional()

@@ -13,7 +13,7 @@ import { CustomError } from '@/utils/error/custom.error';
 export class CreateTutorialController {
   constructor(private readonly createTutorialUseCase: CreateTutorialUseCase) {}
 
-  @Post()
+  @Post('/new')
   async create(
     @Body() createTutorialRequest: CreateTutorialRequest,
   ): Promise<any> {
@@ -23,6 +23,7 @@ export class CreateTutorialController {
       );
       return tutorial;
     } catch (error) {
+      console.log(error);
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);
       }
