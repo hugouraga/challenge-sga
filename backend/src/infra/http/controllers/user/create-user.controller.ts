@@ -11,11 +11,11 @@ import { CreateUserUseCase } from '@/application/use-cases/user/create-user.use-
 import { CreateUserRequest } from './dtos/create-user.request';
 import { CustomError } from '@/utils/error/custom.error';
 
-@Controller('user/create')
+@Controller('user')
 export class UserCreateController {
   constructor(private readonly createUser: CreateUserUseCase) {}
 
-  @Post('')
+  @Post('/signup')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async create(@Body() createUserRequest: CreateUserRequest): Promise<any> {
     try {

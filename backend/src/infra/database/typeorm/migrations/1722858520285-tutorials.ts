@@ -40,6 +40,10 @@ export class CreateTutorials1722858520285 implements MigrationInterface {
             length: '36',
           },
           {
+            name: 'is_deleted',
+            type: 'boolean',
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
