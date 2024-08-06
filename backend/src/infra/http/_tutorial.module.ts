@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateTutorialController } from './controllers/tutorial/create-tutorial.controller';
 import { DeleteTutorialController } from './controllers/tutorial/delete-tutorial.controller';
 import { GetTutorialByIdController } from './controllers/tutorial/get-tutorial-by-id.controller';
@@ -10,9 +11,13 @@ import { DeleteTutorialUseCase } from '@/application/use-cases/tutorial/delete-t
 import { UpdateTutorialUseCase } from '@/application/use-cases/tutorial/update-tutorial.use-case';
 import { GetTutorialsByUserIdUseCase } from '@/application/use-cases/tutorial/get-tutorials-user-id.use-case';
 import { TutorialRepository } from '@/domain/repository/tutorial.repository';
-import { InMemoryTutorialRepository } from '@/infra/database/memory/in-memory-tutorial.repository';
+import { TypeOrmTutorialRepository } from '../database/typeorm/repository/typeorm-tutorial.repository';
+import { TutorialOrm } from '../database/typeorm/entity/tutorial.orm-entity';
+import { UserOrm } from '../database/typeorm/entity/user.orm-entity';
+import { UserModule } from './_user.module';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([TutorialOrm, UserOrm]), UserModule],
   controllers: [
     CreateTutorialController,
     DeleteTutorialController,
@@ -26,7 +31,7 @@ import { InMemoryTutorialRepository } from '@/infra/database/memory/in-memory-tu
     DeleteTutorialUseCase,
     UpdateTutorialUseCase,
     GetTutorialsByUserIdUseCase,
-    { provide: TutorialRepository, useClass: InMemoryTutorialRepository },
+    { provide: TutorialRepository, useClass: TypeOrmTutorialRepository },
   ],
 })
 export class TutorialModule {}

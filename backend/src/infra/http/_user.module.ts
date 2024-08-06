@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CreateUserUseCase } from '@/application/use-cases/user/create-user.use-case';
-
 import { UserCreateController } from './controllers/user/create-user.controller';
 import { SignInUserUseCase } from '@/application/use-cases/user/sign-in-user.use-case';
 import { UserSignInController } from './controllers/user/auth-user.controller';
@@ -24,5 +23,6 @@ import { UserOrm } from '@/infra/database/typeorm/entity/user.orm-entity';
     UpdateUserUseCase,
     { provide: UserRepository, useClass: TypeOrmUserRepository },
   ],
+  exports: [UserRepository, TypeOrmModule],
 })
 export class UserModule {}
