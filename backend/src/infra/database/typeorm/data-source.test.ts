@@ -2,6 +2,7 @@
 import { DataSource } from 'typeorm';
 import { UserOrm } from './entity/user.orm-entity';
 import { TutorialOrm } from './entity/tutorial.orm-entity';
+import 'dotenv/config';
 
 export const testDataSource = new DataSource({
   type: 'mysql',
