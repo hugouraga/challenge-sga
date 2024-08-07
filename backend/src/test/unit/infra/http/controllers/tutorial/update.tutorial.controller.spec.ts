@@ -5,6 +5,9 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { UpdateTutorialController } from '@/infra/http/controllers/tutorial/update-tutorial.controller';
 import { UpdateTutorialRequest } from '@/infra/http/controllers/tutorial/dtos/update-tutorial-request';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('UpdateTutorialController', () => {
   let controller: UpdateTutorialController;
@@ -19,6 +22,17 @@ describe('UpdateTutorialController', () => {
           useValue: {
             execute: jest.fn(),
           },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();

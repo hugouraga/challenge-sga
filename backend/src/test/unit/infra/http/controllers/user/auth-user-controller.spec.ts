@@ -4,6 +4,14 @@ import { CustomError } from '@/utils/error/custom.error';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserSignInController } from '@/infra/http/controllers/user/auth-user.controller';
 import { SignInUserRequest } from '@/infra/http/controllers/user/dtos/auth-user.request';
+import { AuthService } from '@/infra/http/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '@/domain/entity/user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { UserRepository } from '@/domain/repository/user.repository';
+import { InMemoryUserRepository } from '@/infra/database/memory/in-memory-user-repository';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('User SignIn Controller', () => {
   let controller: UserSignInController;
@@ -13,11 +21,32 @@ describe('User SignIn Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserSignInController],
       providers: [
+        SignInUserUseCase,
         {
-          provide: SignInUserUseCase,
+          provide: AuthService,
           useValue: {
-            execute: jest.fn(),
+            validateUser: jest.fn(),
+            login: jest.fn(),
           },
+        },
+        {
+          provide: getRepositoryToken(User),
+          useClass: InMemoryUserRepository,
+        },
+        {
+          provide: UserRepository,
+          useClass: InMemoryUserRepository,
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();
@@ -43,11 +72,9 @@ describe('User SignIn Controller', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-
     jest.spyOn(useCase, 'execute').mockResolvedValue(signedInUser);
-
     const result = await controller.signin(signInRequest);
-    expect(result).toEqual(signedInUser);
+    expect(result.user).toEqual(signedInUser);
     expect(useCase.execute).toHaveBeenCalledWith({
       userEmail: signInRequest.userEmail,
       userPassword: signInRequest.userPassword,

@@ -3,6 +3,9 @@ import { DeleteTutorialUseCase } from '@/application/use-cases/tutorial/delete-t
 import { CustomError } from '@/utils/error/custom.error';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { DeleteTutorialController } from '@/infra/http/controllers/tutorial/delete-tutorial.controller';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('Delete Tutorial Controller', () => {
   let controller: DeleteTutorialController;
@@ -17,6 +20,17 @@ describe('Delete Tutorial Controller', () => {
           useValue: {
             execute: jest.fn(),
           },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();

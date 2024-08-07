@@ -4,6 +4,9 @@ import { CustomError } from '@/utils/error/custom.error';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserUpdateController } from '@/infra/http/controllers/user/update-user.controller';
 import { UpdateUserRequest } from '@/infra/http/controllers/user/dtos/update-user.request';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('User Update Controller', () => {
   let controller: UserUpdateController;
@@ -18,6 +21,17 @@ describe('User Update Controller', () => {
           useValue: {
             execute: jest.fn(),
           },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();

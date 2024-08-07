@@ -4,6 +4,9 @@ import { CustomError } from '@/utils/error/custom.error';
 import { UserCreateController } from '@/infra/http/controllers/user/create-user.controller';
 import { CreateUserRequest } from '@/infra/http/controllers/user/dtos/create-user.request';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('User Create Controller', () => {
   let controller: UserCreateController;
@@ -18,6 +21,17 @@ describe('User Create Controller', () => {
           useValue: {
             execute: jest.fn(),
           },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();

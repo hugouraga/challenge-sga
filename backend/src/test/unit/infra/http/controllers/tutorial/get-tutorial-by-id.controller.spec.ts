@@ -4,6 +4,9 @@ import { CustomError } from '@/utils/error/custom.error';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { GetTutorialByIdController } from '@/infra/http/controllers/tutorial/get-tutorial-by-id.controller';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@/infra/http/auth/jwt-auth.guard';
 
 describe('Get Tutorial By Id Controller', () => {
   let controller: GetTutorialByIdController;
@@ -18,6 +21,17 @@ describe('Get Tutorial By Id Controller', () => {
           useValue: {
             execute: jest.fn(),
           },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'test-token'),
+            verify: jest.fn(() => ({ userId: 1 })),
+          },
+        },
+        {
+          provide: APP_GUARD,
+          useClass: AuthGuard,
         },
       ],
     }).compile();
