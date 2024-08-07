@@ -1,11 +1,19 @@
 import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
 import { CustomError } from '@/utils/error/custom.error';
-import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('tutorial')
 export class ListTutorialsController {
   constructor(private readonly listTutorialsUseCase: GetTutorialsUseCase) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   async list(): Promise<any> {
     try {

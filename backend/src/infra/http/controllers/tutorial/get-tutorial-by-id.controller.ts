@@ -6,12 +6,15 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('tutorial')
 export class GetTutorialByIdController {
   constructor(private getTutorialUseCase: GetTutorialUseCase) {}
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getById(@Param('id') id: string): Promise<any> {
     try {

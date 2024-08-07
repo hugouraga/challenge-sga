@@ -4,14 +4,17 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { DeleteTutorialUseCase } from '@/application/use-cases/tutorial/delete-tutorial.use-case';
 import { CustomError } from '@/utils/error/custom.error';
+import { AuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('tutorial')
 export class DeleteTutorialController {
   constructor(private readonly deleteTutorialUseCase: DeleteTutorialUseCase) {}
 
+  @UseGuards(AuthGuard)
   @Delete('/delete/:id')
   async delete(@Param('id') id: string) {
     try {

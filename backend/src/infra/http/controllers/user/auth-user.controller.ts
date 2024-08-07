@@ -9,10 +9,14 @@ import {
 import { SignInUserUseCase } from '@/application/use-cases/user/sign-in-user.use-case';
 import { CustomError } from '@/utils/error/custom.error';
 import { SignInUserRequest } from './dtos/auth-user.request';
+import { AuthService } from '../../auth/auth.service';
 
 @Controller('user')
 export class UserSignInController {
-  constructor(private readonly signInUserUseCase: SignInUserUseCase) {}
+  constructor(
+    private readonly signInUserUseCase: SignInUserUseCase,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
@@ -29,7 +33,9 @@ export class UserSignInController {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      return user;
+
+      const token = await this.authService.login(user);
+      return { token, user };
     } catch (error) {
       if (error instanceof CustomError)
         throw new HttpException(error.message, error.statusCode);

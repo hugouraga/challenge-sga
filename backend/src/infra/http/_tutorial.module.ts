@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateTutorialController } from './controllers/tutorial/create-tutorial.controller';
 import { DeleteTutorialController } from './controllers/tutorial/delete-tutorial.controller';
@@ -16,9 +16,14 @@ import { TutorialOrm } from '../database/typeorm/entity/tutorial.orm-entity';
 import { UserOrm } from '../database/typeorm/entity/user.orm-entity';
 import { UserModule } from './_user.module';
 import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TutorialOrm, UserOrm]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([TutorialOrm, UserOrm]),
+    forwardRef(() => UserModule),
+    forwardRef(() => AuthModule),
+  ],
   controllers: [
     CreateTutorialController,
     DeleteTutorialController,

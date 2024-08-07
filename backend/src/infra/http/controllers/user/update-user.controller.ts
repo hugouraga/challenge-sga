@@ -5,18 +5,18 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-case';
 import { CustomError } from '@/utils/error/custom.error';
 import { UpdateUserRequest } from './dtos/update-user.request';
-// import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { AuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserUpdateController {
   constructor(private updateUser: UpdateUserUseCase) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @Put('/update/:id')
   async update(
     @Param('id') id: string,
@@ -31,6 +31,7 @@ export class UserUpdateController {
         userName,
         userPassword,
       });
+
       return { message: 'Usuário atualizado com sucesso' };
     } catch (error) {
       if (error instanceof CustomError) {

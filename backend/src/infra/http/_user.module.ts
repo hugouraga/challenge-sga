@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateUserUseCase } from '@/application/use-cases/user/create-user.use-case';
 import { UserCreateController } from './controllers/user/create-user.controller';
 import { SignInUserUseCase } from '@/application/use-cases/user/sign-in-user.use-case';
@@ -7,11 +8,11 @@ import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-
 import { UserUpdateController } from './controllers/user/update-user.controller';
 import { UserRepository } from '@/domain/repository/user.repository';
 import { TypeOrmUserRepository } from '@/infra/database/typeorm/repository/typeorm-user.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserOrm } from '@/infra/database/typeorm/entity/user.orm-entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserOrm])],
+  imports: [TypeOrmModule.forFeature([UserOrm]), forwardRef(() => AuthModule)],
   controllers: [
     UserSignInController,
     UserCreateController,

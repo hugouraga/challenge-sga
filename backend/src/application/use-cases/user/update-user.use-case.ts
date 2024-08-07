@@ -30,9 +30,12 @@ export class UpdateUserUseCase {
     try {
       const user = await this.userRepository.getById(userId);
       if (!user) throw new CustomError('User not found', 404);
-      const userWithSameEmail = await this.userRepository.getByEmail(userEmail);
-      if (userWithSameEmail && userWithSameEmail.id !== userId)
-        throw new CustomError('Email already in use', 400);
+      if (userEmail) {
+        const userWithSameEmail =
+          await this.userRepository.getByEmail(userEmail);
+        if (userWithSameEmail && userWithSameEmail.id !== userId)
+          throw new CustomError('Email already in use', 400);
+      }
 
       await user.update({
         email: userEmail,
