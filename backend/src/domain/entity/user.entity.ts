@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UserInterface } from '@/domain/interface/user-interface';
 import { CustomError } from '@/utils/error/custom.error';
 

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: backend-sga
+    ports:
+      - '3333:3333'
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USERNAME=user_sga
+      - DB_PASSWORD=password_sga
+      - DB_NAME=sga_challange
+      - JWT_SECRET=ODJASBNDHASFVOWVPWQBEQWBENWQENWQJKENQW
+    # command: >
+    #   sh -c 'npm run migration:run && npm run start:prod'
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: db-sga
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: password_sga
+      MYSQL_DATABASE: sga_challange
+      MYSQL_USER: user_sga
+      MYSQL_PASSWORD: password_sga
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
