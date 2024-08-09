@@ -1,6 +1,6 @@
 "use client";
-
 import styles from "./page.module.css";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Box,
   CssBaseline,
@@ -10,42 +10,65 @@ import {
   Button,
   InputBase,
 } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import Aside from "@/components/Aside";
-import { useCallback, useMemo, useState } from "react";
 import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
 import Header from "@/components/Header";
 import TutorialModal from "@/components/Modals/ModalTutorial";
 import TutorsList from "@/components/paginatedTutors";
-import { useAuth } from "@/context/AuthContext";
-import Tutorial from "@/components/Tutorial";
-import { useFetchTutors } from '@/hooks/useFetchTutors';
+import { useFetchTutors } from "@/hooks/useFetchTutors";
 import { tutorProps } from "@/interfaces/tutor.interface";
 import withAuth from "@/hoc/withAuth";
+import Tutorial from "@/components/Tutorial";
 
 const Home: React.FC = () => {
-  const { users, loading, searchQuery, handleSearchChange, handleTutorClick, tutorialsByTutorId } = useFetchTutors();
+  const {
+    users,
+    loading,
+    searchQuery,
+    handleSearchChange,
+    handleTutorClick,
+    tutorialsByTutorId,
+  } = useFetchTutors();
+
   const [selectedTutor, setSelectedTutor] = useState<tutorProps>({} as tutorProps);
+  const [loadingSwitchingTutor, setLoadingSwitchingTutor] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const handleSelect = useCallback((tutor: tutorProps) => {
-    setSelectedTutor(tutor);
-    handleTutorClick(tutor);
-  }, [handleTutorClick]);
+  const handleSelect = useCallback(
+    (tutor: tutorProps) => {
+      if (tutor?.id === selectedTutor.id) return;
+
+      setLoadingSwitchingTutor(true);
+      setSelectedTutor(tutor);
+      handleTutorClick(tutor);
+    },
+    [handleTutorClick, selectedTutor.id]
+  );
 
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleClose = useCallback(() => setOpen(false), []);
 
-  const handleSearchChangeWithReset = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedTutor({} as tutorProps);
-    handleSearchChange(event);
-  }, [handleSearchChange]);
+  const handleSearchChangeWithReset = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (selectedTutor) {
+        setSelectedTutor({} as tutorProps);
+      }
+      handleSearchChange(event);
+    },
+    [handleSearchChange, selectedTutor]
+  );
 
-  const filteredTutors = useMemo(() => users?.filter((tutor: { name: string; }) =>
-    tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ), [users, searchQuery]);
+  const filteredTutors = useMemo(
+    () =>
+      users?.filter((tutor: { name: string }) =>
+        tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [users, searchQuery]
+  );
 
   const visibleTutorials = useMemo(() => {
+    setLoadingSwitchingTutor(false);
     return selectedTutor ? tutorialsByTutorId[selectedTutor.id] || [] : [];
   }, [selectedTutor, tutorialsByTutorId]);
 
@@ -53,17 +76,9 @@ const Home: React.FC = () => {
     <>
       <main className={styles.main}>
         <CssBaseline />
-        <Grid
-          container
-          className={styles.gridContainer}
-        >
+        <Grid container className={styles.gridContainer}>
           <Header />
-          <Grid
-            item
-            xs={12}
-            md={7.5}
-            className={styles.gridItem}
-          >
+          <Grid item xs={12} md={7.5} className={styles.gridItem}>
             <Box className={styles.searchBox}>
               <Typography fontSize={30} fontWeight={700}>
                 Lista de tutores
@@ -85,15 +100,10 @@ const Home: React.FC = () => {
               selectedTutor={selectedTutor}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            md={4}
-            className={styles.gridItem}
-          >
+          <Grid item xs={12} md={4} className={styles.gridItem}>
             <Aside>
               <List>
-                {loading && !selectedTutor.id ? (
+                {loadingSwitchingTutor ? (
                   <SkeletonTutorial />
                 ) : selectedTutor && visibleTutorials.length === 0 ? (
                   <Box className={styles.noTutorialsBox}>
@@ -118,7 +128,7 @@ const Home: React.FC = () => {
                   <Box className={styles.noTutorialsBox}>
                     <Button
                       variant="contained"
-                      color={loading ? 'info' : 'warning'}
+                      color={loading ? "info" : "warning"}
                       sx={{ mt: 3, boxShadow: 0, border: 0 }}
                       onClick={handleOpen}
                       disabled={loading}
