@@ -12,38 +12,43 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import Aside from "@/components/Aside";
-import { Key, SetStateAction, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
 import Header from "@/components/Header";
-import { Colors } from "@/theme/colors";
 import TutorialModal from "@/components/Modals/ModalTutorial";
 import TutorsList from "@/components/paginatedTutors";
 import { useAuth } from "@/context/AuthContext";
 import Tutorial from "@/components/Tutorial";
 import { useFetchTutors } from '@/hooks/useFetchTutors';
 import { tutorProps } from "@/interfaces/tutor.interface";
-import { tutorialInterface } from "@/interfaces/tutorial.interta";
 import withAuth from "@/hoc/withAuth";
 
 const Home: React.FC = () => {
-  const { user } = useAuth();
   const { users, loading, searchQuery, handleSearchChange, handleTutorClick, tutorialsByTutorId } = useFetchTutors();
-  const [selectedTutor, setSelectedTutor] = useState<tutorProps>({} as tutorProps);
+  const [selectedTutor, setSelectedTutor] = useState<tutorProps | null>(null);
   const [open, setOpen] = useState(false);
 
-  const handleSelect = (tutor: tutorProps) => {
+  const handleSelect = useCallback((tutor: tutorProps) => {
     setSelectedTutor(tutor);
     handleTutorClick(tutor);
-  };
+  }, [handleTutorClick]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleClose = useCallback(() => setOpen(false), []);
 
-  const filteredTutors = users?.filter((tutor: { name: string; }) =>
+  const handleSearchChangeWithReset = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedTutor(null);
+    handleSearchChange(event);
+  }, [handleSearchChange]);
+
+  const filteredTutors = useMemo(() => users?.filter((tutor: { name: string; }) =>
     tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ), [users, searchQuery]);
 
-  const visibleTutorials = selectedTutor ? tutorialsByTutorId[selectedTutor.id] || [] : [];
+  const visibleTutorials = useMemo(() => {
+    return selectedTutor ? tutorialsByTutorId[selectedTutor.id] || [] : [];
+  }, [selectedTutor, tutorialsByTutorId]);
+
   return (
     <>
       <main className={styles.main}>
@@ -68,7 +73,7 @@ const Home: React.FC = () => {
                 <InputBase
                   placeholder="Buscar..."
                   value={searchQuery}
-                  onChange={handleSearchChange}
+                  onChange={handleSearchChangeWithReset}  // Usando a nova função que redefine selectedTutor
                   sx={{ marginLeft: 1, flex: 1 }}
                 />
               </Box>
@@ -88,9 +93,9 @@ const Home: React.FC = () => {
           >
             <Aside>
               <List>
-                {loading ? (
+                {loading && !selectedTutor ? (
                   <SkeletonTutorial />
-                ) : selectedTutor.id && visibleTutorials.length === 0 ? (
+                ) : selectedTutor && visibleTutorials.length === 0 ? (
                   <Box className={styles.noTutorialsBox}>
                     <Typography variant="subtitle1">
                       Sem tutoriais cadastrados para esse usuário
@@ -109,7 +114,7 @@ const Home: React.FC = () => {
                   ))
                 )}
 
-                {selectedTutor.id ? (
+                {selectedTutor ? (
                   <Box className={styles.noTutorialsBox}>
                     <Button
                       variant="contained"
@@ -139,4 +144,4 @@ const Home: React.FC = () => {
   );
 }
 
-export default withAuth(Home)
+export default withAuth(Home);

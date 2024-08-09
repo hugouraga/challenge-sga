@@ -11,22 +11,22 @@ interface AsideProps {
   loading?: boolean;
 }
 
-const Aside: React.FC<AsideProps> = ({ children, showMore, canShowMore, loading }) => {
+const Aside: React.FC<AsideProps> = React.memo(({ children, showMore, canShowMore, loading }) => {
   return (
     <Box sx={{ flex: 1, padding: '16px', height: 'calc(65vh)', position: 'relative' }}>
-      <Box sx={{ 
-          padding: '24px 16px 16px 13px', 
-          backgroundColor: Colors.secondary, 
-          borderRadius: '24px', 
-          height: '100%', 
-          overflowY: 'auto',
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0
-        }}>
-        <Typography style={{fontSize: 28, marginLeft: 6}} fontWeight={600} gutterBottom marginBottom={1}> 
+      <Box sx={{
+        padding: '24px 16px 16px 13px',
+        backgroundColor: Colors.secondary,
+        borderRadius: '24px',
+        height: '100%',
+        overflowY: 'auto',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      }}>
+        <Typography style={{ fontSize: 28, marginLeft: 6 }} fontWeight={600} gutterBottom marginBottom={1}>
           Tutorias
         </Typography>
 
@@ -46,6 +46,6 @@ const Aside: React.FC<AsideProps> = ({ children, showMore, canShowMore, loading 
       </Box>
     </Box>
   );
-};
+});
 
 export default Aside;

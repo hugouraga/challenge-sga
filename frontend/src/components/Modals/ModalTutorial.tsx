@@ -7,7 +7,7 @@ import { createTutorial } from '@/store/appDataSlice/appDataSlice';
 
 interface TutorialModalProps {
   open: boolean;
-  selectedTutor: tutorProps;
+  selectedTutor: tutorProps | null;
   handleClose: () => void;
 }
 
@@ -20,7 +20,7 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ open, handleClose, select
   const [success, setSuccess] = useState(false);
   const handleSave = () => {
     const newTutorial: tutorialInterface = {
-      creatorId: selectedTutor.id,
+      creatorId: selectedTutor?.id,
       title,
       summary,
       estimatedDuration: String(duration),
