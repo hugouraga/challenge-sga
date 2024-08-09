@@ -46,13 +46,16 @@ export const fetchTutors = createAsyncThunk(
   'contentManagement/fetchTutors',
   async ({ page, query }: { page: number; query: string }) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/tutors/fetch?page=${page}&query=${query}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/users/list?page=${page}&query=${query}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
       },
-    });
+    );
     return response.json();
   }
 );

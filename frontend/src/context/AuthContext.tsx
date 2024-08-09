@@ -33,9 +33,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/signin', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/user/signin`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ userEmail: email, userPassword: password }),
       });
       const data = await response.json();
