@@ -128,7 +128,7 @@ export const deleteTutorial = createAsyncThunk(
   async (tutorialId: string) => {
     const token = localStorage.getItem('token');
     await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/${tutorialId}`,
+        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/delete/${tutorialId}`,
       {
         method: 'DELETE',
         headers: {
