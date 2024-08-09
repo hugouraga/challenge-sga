@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, use } from 'react';
 
 interface AuthContextData {
   user: any;
@@ -42,8 +42,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       const data = await response.json();
       const { token, user } = data;
+
+      if (!token || !user) throw new Error('Credenciais inválidas');
       localStorage.setItem('token', token.access_token);
       setUser(user);
+
+
     } catch (error: any) {
       throw new Error(error)
     }

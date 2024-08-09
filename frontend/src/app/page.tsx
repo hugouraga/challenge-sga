@@ -18,10 +18,25 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function SignIn() {
   const router = useRouter();
-  const [emailError, setEmailError] = React.useState(false);
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
   const { signIn } = useAuth();
+
+  const [emailError, setEmailError] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
+  const [generalError, setGeneralError] = React.useState<string | null>(null);
+
+  const validateEmail = (email: string) => {
+    if (!email.includes('@')) {
+      return 'Email deve conter "@"';
+    }
+    return null;
+  };
+
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return 'Senha deve conter pelo menos 8 caracteres.';
+    }
+    return null;
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,18 +44,38 @@ export default function SignIn() {
     const email = String(data.get('email')) ?? '';
     const password = String(data.get('password')) ?? '';
 
-    if (email.trim() === '' || password.trim() === '') {
-      setEmailError(true);
-      setPasswordError(true);
-      setHelperText('Credenciais incorretas. Tente novamente.');
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    if (emailError || passwordError) {
+      setEmailError(emailError);
+      setPasswordError(passwordError);
+      setGeneralError(null);
       return;
     }
-    setEmailError(false);
-    setPasswordError(false);
-    setHelperText('');
 
-    await signIn(email, password);
-    router.push('/Home');
+    setEmailError(null);
+    setPasswordError(null);
+
+    try {
+      await signIn(email, password);
+      router.push('/Home');
+    } catch (error: any) {
+      setGeneralError('Erro ao realizar login. Verifique suas credenciais e tente novamente.');
+    }
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    switch (name) {
+      case 'email':
+        setEmailError(validateEmail(value));
+        break;
+      case 'password':
+        setPasswordError(validatePassword(value));
+        break;
+    }
   };
 
   return (
@@ -62,6 +97,11 @@ export default function SignIn() {
             Login - SGA
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            {generalError && (
+              <Typography color="error" variant="body2" align="center" sx={{ mb: 2 }}>
+                {generalError}
+              </Typography>
+            )}
             <TextField
               margin="normal"
               required
@@ -71,8 +111,9 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
-              error={emailError}
-              helperText={emailError && helperText}
+              error={!!emailError}
+              helperText={emailError}
+              onBlur={handleBlur}
             />
             <TextField
               margin="normal"
@@ -83,8 +124,9 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              error={passwordError}
-              helperText={passwordError && helperText}
+              error={!!passwordError}
+              helperText={passwordError}
+              onBlur={handleBlur}
             />
             <Button
               type="submit"

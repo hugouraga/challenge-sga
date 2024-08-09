@@ -14,14 +14,15 @@ interface ClientLayoutProps {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   return (
-    <Provider store={store}>
-      <ErrorProvider>
+    <ErrorProvider>
+      <Provider store={store}>
         <ThemeRegistry>
           <AuthProvider>
             <body>{children}</body>
           </AuthProvider>
         </ThemeRegistry>
-      </ErrorProvider>
-    </Provider>
+      </Provider>
+    </ErrorProvider>
+
   );
 }
