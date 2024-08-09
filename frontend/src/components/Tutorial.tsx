@@ -117,7 +117,7 @@ const Tutorial: React.FC<TutorialInterface> = ({ id, title, hours, category, des
         />
         <ListItemText
           primary={title}
-          secondary={`${hours} Hour${hours > 1 ? 's' : ''}`}
+          secondary={`${hours} Hora${hours > 1 ? 's' : ''}`}
           primaryTypographyProps={{ fontWeight: 800 }}
           secondaryTypographyProps={{ fontWeight: 500 }}
         />
