@@ -11,7 +11,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorial/delete/${tutorialId}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/delete/${tutorialId}`,
       {
         method: 'DELETE',
         headers: {

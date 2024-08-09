@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const token = req.headers.get('authorization');
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorials/list?${subQuery}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/list?${subQuery}`,
       {
         method: 'GET',
         headers: {

@@ -98,7 +98,7 @@ export const editTutorial = createAsyncThunk(
     const token = localStorage.getItem('token');
     const { id, ...tutorialWithoutId } = tutorial;
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorial/edit/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/edit/${id}`,
       {
         method: 'PUT',
         headers: {
@@ -118,7 +118,7 @@ export const deleteTutorial = createAsyncThunk(
   async (tutorialId: string) => {
     const token = localStorage.getItem('token');
     await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorial/delete/${tutorialId}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'/tutorial/delete/${tutorialId}`,
       {
         method: 'DELETE',
         headers: {
@@ -140,7 +140,7 @@ export const editUser = createAsyncThunk(
     const token = localStorage.getItem('token');
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorials/update`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'/tutorials/update`,
       {
         method: 'PUT',
         headers: {

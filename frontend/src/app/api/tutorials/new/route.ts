@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const token = req.headers.get('authorization');
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorial/new`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/new`,
       {
         method: 'POST',
         headers: {

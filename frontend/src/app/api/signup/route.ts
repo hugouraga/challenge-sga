@@ -9,7 +9,7 @@ export async function POST(
   try {
     const body = await req.json();
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/user/signup`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/user/signup`,
       {
         method: 'POST',
         headers: {

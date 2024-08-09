@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const token = req.headers.get('authorization');
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/list?page=${page}&query=${query}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/users/list?page=${page}&query=${query}`,
       {
         method: 'GET',
         headers: {

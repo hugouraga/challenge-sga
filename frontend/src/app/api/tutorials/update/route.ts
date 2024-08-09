@@ -11,7 +11,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/tutorials/update`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/update`,
       {
         method: 'PUT',
         headers: {
