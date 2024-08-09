@@ -25,7 +25,7 @@ import withAuth from "@/hoc/withAuth";
 
 const Home: React.FC = () => {
   const { users, loading, searchQuery, handleSearchChange, handleTutorClick, tutorialsByTutorId } = useFetchTutors();
-  const [selectedTutor, setSelectedTutor] = useState<tutorProps | null>(null);
+  const [selectedTutor, setSelectedTutor] = useState<tutorProps>({} as tutorProps);
   const [open, setOpen] = useState(false);
 
   const handleSelect = useCallback((tutor: tutorProps) => {
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
   const handleClose = useCallback(() => setOpen(false), []);
 
   const handleSearchChangeWithReset = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedTutor(null);
+    setSelectedTutor({} as tutorProps);
     handleSearchChange(event);
   }, [handleSearchChange]);
 
@@ -73,7 +73,7 @@ const Home: React.FC = () => {
                 <InputBase
                   placeholder="Buscar..."
                   value={searchQuery}
-                  onChange={handleSearchChangeWithReset}  // Usando a nova função que redefine selectedTutor
+                  onChange={handleSearchChangeWithReset}
                   sx={{ marginLeft: 1, flex: 1 }}
                 />
               </Box>
@@ -93,7 +93,7 @@ const Home: React.FC = () => {
           >
             <Aside>
               <List>
-                {loading && !selectedTutor ? (
+                {loading && !selectedTutor.id ? (
                   <SkeletonTutorial />
                 ) : selectedTutor && visibleTutorials.length === 0 ? (
                   <Box className={styles.noTutorialsBox}>
