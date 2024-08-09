@@ -20,6 +20,7 @@ import { useFetchTutors } from "@/hooks/useFetchTutors";
 import { tutorProps } from "@/interfaces/tutor.interface";
 import withAuth from "@/hoc/withAuth";
 import Tutorial from "@/components/Tutorial";
+import TableTutorial from "@/components/Tables/TableTutorials";
 
 const Home: React.FC = () => {
   const {
@@ -146,6 +147,8 @@ const Home: React.FC = () => {
             </Aside>
           </Grid>
         </Grid>
+
+        {/* <TableTutorial tutorials={[]} /> */}
       </main>
 
       <TutorialModal open={open} handleClose={handleClose} selectedTutor={selectedTutor} />
