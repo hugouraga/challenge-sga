@@ -60,18 +60,22 @@ export const fetchTutors = createAsyncThunk(
   }
 );
 
+
 // Fetch Tutorials for a Specific Tutor
 export const fetchTutorTutorials = createAsyncThunk(
   'contentManagement/fetchTutorTutorials',
   async (creatorId: string) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/tutorials/fetch?creatorId=${creatorId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/list?creatorId=${creatorId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
     const tutorials = await response.json();
     return { creatorId, tutorials };
   }
@@ -82,14 +86,17 @@ export const createTutorial = createAsyncThunk(
   'contentManagement/createTutorial',
   async (tutorial: tutorialInterface) => {
     const token = localStorage.getItem('token');
-    const response = await fetch('/api/tutorials/new', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(tutorial),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/new`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(tutorial),
+      }
+    );
     return response.json();   
   }
 );
