@@ -5,13 +5,13 @@ FROM node:21-alpine3.18
 WORKDIR /app
 
 # Copiar o package.json e o yarn.lock
-COPY backend/package*.json ./
+COPY package*.json ./
 
 # Instalar as dependências do projeto
 RUN yarn
 
 # Copiar o restante do código do projeto
-COPY backend . 
+COPY . .
 
 # Construir o projeto
 RUN yarn build
