@@ -21,11 +21,31 @@ export default function SignUp() {
   const router = useRouter();
   const { setError } = useError();
 
-  const [userNameError, setUserNameError] = React.useState(false);
-  const [userEmailError, setUserEmailError] = React.useState(false);
-  const [userPasswordError, setUserPasswordError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
+  const [userNameError, setUserNameError] = React.useState<string | null>(null);
+  const [userEmailError, setUserEmailError] = React.useState<string | null>(null);
+  const [userPasswordError, setUserPasswordError] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState('');
+
+  const validateUserName = (name: string) => {
+    if (name.trim().split(' ').length < 2) {
+      return 'Nome deve incluir nome e sobrenome.';
+    }
+    return null;
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email.includes('@')) {
+      return 'Email deve conter "@"';
+    }
+    return null;
+  };
+
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return 'Senha deve conter pelo menos 8 caracteres.';
+    }
+    return null;
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,20 +54,23 @@ export default function SignUp() {
     const userEmail = data.get('userEmail') as string;
     const userPassword = data.get('userPassword') as string;
 
-    if (!userName || !userEmail || !userPassword) {
-      setHelperText('Todos os campos são obrigatórios.');
-      setUserNameError(!userName);
-      setUserEmailError(!userEmail);
-      setUserPasswordError(!userPassword);
+    // Validações
+    const userNameError = validateUserName(userName);
+    const userEmailError = validateEmail(userEmail);
+    const userPasswordError = validatePassword(userPassword);
+
+    if (userNameError || userEmailError || userPasswordError) {
+      setUserNameError(userNameError);
+      setUserEmailError(userEmailError);
+      setUserPasswordError(userPasswordError);
       return;
     }
 
-    setUserNameError(false);
-    setUserEmailError(false);
-    setUserPasswordError(false);
-    setHelperText('');
+    setUserNameError(null);
+    setUserEmailError(null);
+    setUserPasswordError(null);
 
-    const signinObject = JSON.stringify({ userName, userEmail, userPassword });
+    const signupObject = JSON.stringify({ userName, userEmail, userPassword });
 
     try {
       const response = await fetch(
@@ -57,7 +80,7 @@ export default function SignUp() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: signinObject,
+          body: signupObject,
         },
       );
 
@@ -73,7 +96,22 @@ export default function SignUp() {
       }, 2000);
     } catch (error: any) {
       setError(error.message);
-      setHelperText('Erro ao registrar. Tente novamente.');
+    }
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    switch (name) {
+      case 'userName':
+        setUserNameError(validateUserName(value));
+        break;
+      case 'userEmail':
+        setUserEmailError(validateEmail(value));
+        break;
+      case 'userPassword':
+        setUserPasswordError(validatePassword(value));
+        break;
     }
   };
 
@@ -126,8 +164,9 @@ export default function SignUp() {
                     id="userName"
                     label="Nome"
                     autoFocus
-                    error={userNameError}
-                    helperText={userNameError && helperText}
+                    error={!!userNameError}
+                    helperText={userNameError}
+                    onBlur={handleBlur}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -138,8 +177,9 @@ export default function SignUp() {
                     label="Email"
                     name="userEmail"
                     autoComplete="email"
-                    error={userEmailError}
-                    helperText={userEmailError && helperText}
+                    error={!!userEmailError}
+                    helperText={userEmailError}
+                    onBlur={handleBlur}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -151,8 +191,9 @@ export default function SignUp() {
                     type="password"
                     id="userPassword"
                     autoComplete="new-password"
-                    error={userPasswordError}
-                    helperText={userPasswordError && helperText}
+                    error={!!userPasswordError}
+                    helperText={userPasswordError}
+                    onBlur={handleBlur}
                   />
                 </Grid>
               </Grid>
