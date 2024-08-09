@@ -38,7 +38,6 @@ const Home: React.FC = () => {
   const handleSelect = useCallback(
     (tutor: tutorProps) => {
       if (tutor?.id === selectedTutor.id) return;
-
       setLoadingSwitchingTutor(true);
       setSelectedTutor(tutor);
       handleTutorClick(tutor);
@@ -105,7 +104,7 @@ const Home: React.FC = () => {
               <List>
                 {loadingSwitchingTutor ? (
                   <SkeletonTutorial />
-                ) : selectedTutor && visibleTutorials.length === 0 ? (
+                ) : selectedTutor.id && visibleTutorials.length === 0 ? (
                   <Box className={styles.noTutorialsBox}>
                     <Typography variant="subtitle1">
                       Sem tutoriais cadastrados para esse usuário
@@ -124,7 +123,7 @@ const Home: React.FC = () => {
                   ))
                 )}
 
-                {selectedTutor ? (
+                {selectedTutor.id ? (
                   <Box className={styles.noTutorialsBox}>
                     <Button
                       variant="contained"
