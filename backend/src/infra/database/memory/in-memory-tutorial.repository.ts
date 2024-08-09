@@ -11,6 +11,7 @@ export class InMemoryTutorialRepository implements TutorialRepository {
   private tutorialList: Tutorial[] = [];
 
   async getAll(
+    creatorId: string,
     filters: TutorialFilter,
     pagination: TutorialPagination,
   ): Promise<Tutorial[]> {

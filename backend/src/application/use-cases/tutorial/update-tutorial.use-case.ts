@@ -37,7 +37,7 @@ export class UpdateTutorialUseCase {
     difficultyLevel,
     isDeleted,
     creatorId,
-  }: UpdateTutorialUseCaseInput): Promise<UpdateTutorialUseCaseOutput> {
+  }: UpdateTutorialUseCaseInput): Promise<any> {
     const tutorial = await this.tutorialRepository.getById(tutorialId);
     if (!tutorial) {
       throw new CustomError('Tutorial not found', 404);

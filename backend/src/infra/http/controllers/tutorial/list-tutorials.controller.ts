@@ -5,19 +5,20 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../../auth/jwt-auth.guard';
 
-@Controller('tutorial')
+@Controller('tutorials')
 export class ListTutorialsController {
   constructor(private readonly listTutorialsUseCase: GetTutorialsUseCase) {}
 
   @UseGuards(AuthGuard)
-  @Get()
-  async list(): Promise<any> {
+  @Get('/list')
+  async list(@Query('creatorId') creatorId?: string): Promise<any> {
     try {
-      const tutorials = await this.listTutorialsUseCase.execute();
+      const tutorials = await this.listTutorialsUseCase.execute({ creatorId });
       return tutorials;
     } catch (error) {
       if (error instanceof CustomError) {

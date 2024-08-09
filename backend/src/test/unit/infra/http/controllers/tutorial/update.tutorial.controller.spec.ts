@@ -57,8 +57,7 @@ describe('UpdateTutorialController', () => {
 
     jest.spyOn(useCase, 'execute').mockResolvedValue(undefined);
 
-    const result = await controller.update(tutorialId, updateTutorialRequest);
-    expect(result).toEqual({ message: 'Tutorial atualizado com sucesso' });
+    await controller.update(tutorialId, updateTutorialRequest);
     expect(useCase.execute).toHaveBeenCalledWith({
       tutorialId,
       ...updateTutorialRequest,

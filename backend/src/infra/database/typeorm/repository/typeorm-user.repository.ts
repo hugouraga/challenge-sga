@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User as DomainUser } from '@/domain/entity/user.entity';
-import { UserRepository } from '@/domain/repository/user.repository';
+import {
+  findUsersInterface,
+  UserRepository,
+} from '@/domain/repository/user.repository';
 import { UserOrm } from '../entity/user.orm-entity';
 
 @Injectable()
@@ -59,5 +62,31 @@ export class TypeOrmUserRepository implements UserRepository {
 
   async delete(id: string): Promise<void> {
     await this.repository.softDelete(id);
+  }
+
+  async findUsers({ page, limit, name }: findUsersInterface): Promise<any> {
+    const queryBuilder = this.repository.createQueryBuilder('user');
+
+    if (name) {
+      queryBuilder.andWhere('user.name LIKE :name', { name: `%${name}%` });
+    }
+
+    const [usersOrm, total] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const totalPages = Math.ceil(total / limit);
+
+    const users = usersOrm.map((userOrm) => userOrm.toDomain());
+
+    return {
+      users,
+      total,
+      page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 }

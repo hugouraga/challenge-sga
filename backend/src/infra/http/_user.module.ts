@@ -10,6 +10,8 @@ import { UserRepository } from '@/domain/repository/user.repository';
 import { TypeOrmUserRepository } from '@/infra/database/typeorm/repository/typeorm-user.repository';
 import { UserOrm } from '@/infra/database/typeorm/entity/user.orm-entity';
 import { AuthModule } from './auth/auth.module';
+import { ListUsersController } from './controllers/user/list-users.controller';
+import { GetUsersUseCase } from '@/application/use-cases/user/get-list-users.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserOrm]), forwardRef(() => AuthModule)],
@@ -17,11 +19,13 @@ import { AuthModule } from './auth/auth.module';
     UserSignInController,
     UserCreateController,
     UserUpdateController,
+    ListUsersController,
   ],
   providers: [
     CreateUserUseCase,
     SignInUserUseCase,
     UpdateUserUseCase,
+    GetUsersUseCase,
     { provide: UserRepository, useClass: TypeOrmUserRepository },
   ],
   exports: [UserRepository, TypeOrmModule],

@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { DifficultyLevel } from '@/utils/enum/difiiculty-level-enum';
 import { TutorialRepository } from '@/domain/repository/tutorial.repository';
 
+export interface GetTutorialsUseCaseInput {
+  creatorId?: string;
+}
+
 interface GetTutorialsUseCaseOutput {
   id: string;
   title: string;
@@ -18,8 +22,10 @@ interface GetTutorialsUseCaseOutput {
 export class GetTutorialsUseCase {
   constructor(private readonly tutorialRepository: TutorialRepository) {}
 
-  async execute(): Promise<GetTutorialsUseCaseOutput[]> {
-    const tutorials = await this.tutorialRepository.getAll();
+  async execute({
+    creatorId,
+  }: GetTutorialsUseCaseInput): Promise<GetTutorialsUseCaseOutput[]> {
+    const tutorials = await this.tutorialRepository.getAll(creatorId);
     if (!tutorials) return [];
     return tutorials.map((tutorial) => ({
       id: tutorial.id,

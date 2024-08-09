@@ -20,11 +20,11 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
   ) {}
 
   async getAll(
+    creatorId?: string,
     filters?: TutorialFilter,
     pagination?: TutorialPagination,
   ): Promise<DomainTutorial[]> {
     const query = this.tutorialRepository.createQueryBuilder('tutorial');
-
     if (filters) {
       if (filters.title) {
         query.andWhere('tutorial.title LIKE :title', {
@@ -36,11 +36,13 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
           summary: `%${filters.summary}%`,
         });
       }
+
       if (filters.creatorId) {
         query.andWhere('tutorial.creatorId = :creatorId', {
           creatorId: filters.creatorId,
         });
       }
+
       if (filters.difficultyLevel) {
         query.andWhere('tutorial.difficultyLevel = :difficultyLevel', {
           difficultyLevel: filters.difficultyLevel,
@@ -51,6 +53,12 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
           tags: filters.tags,
         });
       }
+    }
+
+    if (creatorId) {
+      query.andWhere('tutorial.creator_id = :creator_id', {
+        creator_id: creatorId,
+      });
     }
 
     if (pagination) query.skip(pagination.offset).take(pagination.limit);

@@ -29,7 +29,7 @@ export class UpdateTutorialController {
       const { creatorId, difficultyLevel, estimatedDuration, summary, title } =
         updateTutorialRequest;
 
-      await this.updateTutorialUseCase.execute({
+      const tutorial = await this.updateTutorialUseCase.execute({
         tutorialId: id,
         difficultyLevel,
         estimatedDuration,
@@ -37,7 +37,7 @@ export class UpdateTutorialController {
         title,
         creatorId,
       });
-      return { message: 'Tutorial atualizado com sucesso' };
+      return tutorial;
     } catch (error) {
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);
