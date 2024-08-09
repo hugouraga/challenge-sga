@@ -1,12 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function DELETE(req: NextRequest) {
   try {
-    const { tutorialId } = req.query;
-    const token = req.headers.authorization;
+    const { searchParams } = new URL(req.url);
+    const tutorialId = searchParams.get('tutorialId');
+    const token = req.headers.get('authorization');
 
-    if (!tutorialId || typeof tutorialId !== 'string') {
-      return res.status(400).json({ message: 'ID do tutorial não fornecido ou inválido' });
+    if (!tutorialId) {
+      return NextResponse.json({ message: 'ID do tutorial não fornecido ou inválido' }, { status: 400 });
     }
 
     const response = await fetch(
@@ -15,14 +16,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : '',
         },
       }
     );
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
+    }
+
     const data = await response.json();
-    return res.status(response.status).json(data);
+    return NextResponse.json(data, { status: response.status });
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return NextResponse.json({ message: 'Erro interno no servidor' }, { status: 500 });
   }
 }

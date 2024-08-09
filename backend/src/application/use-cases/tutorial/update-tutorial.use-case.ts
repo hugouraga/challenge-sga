@@ -13,18 +13,6 @@ interface UpdateTutorialUseCaseInput {
   creatorId?: string;
 }
 
-interface UpdateTutorialUseCaseOutput {
-  id: string;
-  title: string;
-  summary: string;
-  estimatedDuration: string;
-  difficultyLevel: DifficultyLevel;
-  creatorId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isDeleted: boolean;
-}
-
 @Injectable()
 export class UpdateTutorialUseCase {
   constructor(private readonly tutorialRepository: TutorialRepository) {}

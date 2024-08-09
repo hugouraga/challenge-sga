@@ -1,15 +1,14 @@
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'PUT') {
-    res.setHeader('Allow', ['PUT']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function PUT(req: NextRequest) {
   try {
-    const tutorial: tutorialInterface = req.body;
+    const tutorial: tutorialInterface = await req.json();
+    const token = req.headers.get('authorization');
+
+    if (!token) {
+      return NextResponse.json({ message: 'Token de autenticação não fornecido' }, { status: 401 });
+    }
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/tutorials/update`,
@@ -17,15 +16,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(tutorial),
       }
     );
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
+    }
+
     const data = await response.json();
-    return res.status(response.status).json(data);
+    return NextResponse.json(data, { status: response.status });
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return NextResponse.json({ message: 'Erro interno no servidor' }, { status: 500 });
   }
 }
