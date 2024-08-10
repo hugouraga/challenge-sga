@@ -9,14 +9,15 @@ import NavMenu from './NavMenu';
 import UserMenu from './UserMenu';
 import NavButton from './NavButton';
 import { useAuth } from '@/context/AuthContext';
+import { useState } from 'react';
 
 interface HeaderProps {
   onMenuClick: (screen: 'tutores' | 'tutoriais') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { user } = useAuth();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
