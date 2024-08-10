@@ -38,7 +38,6 @@ export class GetTutorialsUseCase {
     pagination = { offset: 0, limit: 10 },
   }: GetTutorialsUseCaseInput): Promise<GetTutorialsUseCaseOutput> {
     try {
-      console.log(filters);
       if (filters?.difficultyLevel) {
         const validDifficultyLevels = Object.keys(DifficultyLevel).map(
           (key) => DifficultyLevel[key],
