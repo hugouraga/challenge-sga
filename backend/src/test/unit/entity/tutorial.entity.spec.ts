@@ -67,7 +67,6 @@ describe('Tutorial Entity', () => {
     await inMemoryTutorialRepository.create(tutorial2);
 
     const tutorials = await inMemoryTutorialRepository.getAll(
-      '',
       {},
       { limit: 1, offset: 0 },
     );
@@ -75,7 +74,6 @@ describe('Tutorial Entity', () => {
     expect(tutorials[0]).toEqual(tutorial);
 
     const filteredTutorials = await inMemoryTutorialRepository.getAll(
-      '',
       { creatorId: 'Creator 2' },
       { limit: 1, offset: 0 },
     );

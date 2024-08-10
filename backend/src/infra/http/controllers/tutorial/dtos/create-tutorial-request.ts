@@ -14,7 +14,7 @@ export class CreateTutorialRequest {
   @IsString({
     message: 'O campo `estimatedDuration` tem que ser do tipo string',
   })
-  estimatedDuration: string; // em minutos
+  estimatedDuration: string; // em horas
 
   @IsNotEmpty({ message: 'O nível de dificuldade é obrigatório' })
   @IsEnum(DifficultyLevel, { message: 'Nível de dificuldade inválido' })

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Box, Stack, Pagination, Typography } from '@mui/material';
-import TutorialItem from './TutorItem';
+import TutorialItem from './Tutor/TutorItem';
 import { tutorProps } from '@/interfaces/tutor.interface';
 
 interface Props {

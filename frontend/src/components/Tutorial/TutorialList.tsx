@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { List, Box, Typography } from '@mui/material';
-import TutorItem from './TutorItem';
+import TutorItem from '../Tutor/TutorItem';
 import { tutorProps } from '@/interfaces/tutor.interface';
 
 interface TutorListProps {

@@ -5,7 +5,7 @@ import { ListItem, ListItemAvatar, ListItemText, IconButton, Skeleton } from '@m
 const SkeletonTutorial: React.FC = () => {
   return (
     <>
-      {Array.from(new Array(6)).map((_, index) => (
+      {Array.from(new Array(4)).map((_, index) => (
         <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: '8px 0' }}>
           <ListItemAvatar>
             <Skeleton variant="circular" width={40} height={40} />

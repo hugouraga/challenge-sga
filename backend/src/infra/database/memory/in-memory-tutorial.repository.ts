@@ -10,8 +10,11 @@ import { Injectable } from '@nestjs/common';
 export class InMemoryTutorialRepository implements TutorialRepository {
   private tutorialList: Tutorial[] = [];
 
+  async count(): Promise<number> {
+    return this.tutorialList.length;
+  }
+
   async getAll(
-    creatorId: string,
     filters: TutorialFilter,
     pagination: TutorialPagination,
   ): Promise<Tutorial[]> {

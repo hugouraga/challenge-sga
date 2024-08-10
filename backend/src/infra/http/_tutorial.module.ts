@@ -17,6 +17,7 @@ import { UserOrm } from '../database/typeorm/entity/user.orm-entity';
 import { UserModule } from './_user.module';
 import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
 import { AuthModule } from './auth/auth.module';
+import { ListTutorialsUserByIdController } from './controllers/tutorial/list-tutorials-user-by-id.controller';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthModule } from './auth/auth.module';
     GetTutorialByIdController,
     ListTutorialsController,
     UpdateTutorialController,
+    ListTutorialsUserByIdController,
   ],
   providers: [
     CreateTutorialUseCase,
