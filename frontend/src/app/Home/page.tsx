@@ -7,7 +7,7 @@ import TutorialModal from "@/components/Modals/ModalTutorial";
 import { useFetchTutors } from "@/hooks/useFetchTutors";
 import { tutorProps } from "@/interfaces/tutor.interface";
 import withAuth from "@/hoc/withAuth";
-import TableTutorial, { fetchParams } from "@/components/Tables/TableTutorials";
+import TableTutorial from "@/components/Tables/TableTutorials";
 import TutorSection from "@/components/Tutor/TutorSection";
 import Aside from "@/components/Aside";
 import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
@@ -98,10 +98,10 @@ const Home: React.FC = () => {
                         <Tutorial
                           key={tutorial.id}
                           id={tutorial.id}
-                          hours={tutorial.estimatedDuration}
+                          estimatedDuration={tutorial.estimatedDuration}
                           title={tutorial.title}
-                          description={tutorial.summary}
-                          category={tutorial.difficultyLevel}
+                          summary={tutorial.summary}
+                          difficultyLevel={tutorial.difficultyLevel}
                         />
                       ))
                     )}

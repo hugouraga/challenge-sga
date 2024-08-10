@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { ListItem, ListItemText, IconButton, Avatar, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, FormControl, InputLabel, Select, Snackbar, Alert } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { deleteTutorial, editTutorial, TutorialInterface } from '@/store/appDataSlice/appDataSlice';
+import { deleteTutorial, editTutorial } from '@/store/appDataSlice/appDataSlice';
+import { tutorialInterface } from '@/interfaces/tutorial.interta';
 
 
-const Tutorial: React.FC<TutorialInterface> = ({ id, title, hours, category, description, summary, createdAt }) => {
+const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, difficultyLevel, summary, createdAt }) => {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -17,9 +18,9 @@ const Tutorial: React.FC<TutorialInterface> = ({ id, title, hours, category, des
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   const [editTitle, setEditTitle] = useState(title);
-  const [editSummary, setEditSummary] = useState(description);
-  const [editDuration, setEditDuration] = useState<number | string>(hours);
-  const [editDifficulty, setEditDifficulty] = useState(category);
+  const [editSummary, setEditSummary] = useState(summary);
+  const [editDuration, setEditDuration] = useState<number | string>(estimatedDuration ?? 0);
+  const [editDifficulty, setEditDifficulty] = useState(difficultyLevel);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -81,6 +82,7 @@ const Tutorial: React.FC<TutorialInterface> = ({ id, title, hours, category, des
 
   const handleConfirmDelete = async () => {
     try {
+      if (!id) return;
       setSnackbarOpen(true);
       await dispatch(deleteTutorial(id)).unwrap();
       setSnackbarMessage('Tutorial excluído com sucesso!');
@@ -117,7 +119,7 @@ const Tutorial: React.FC<TutorialInterface> = ({ id, title, hours, category, des
         />
         <ListItemText
           primary={title}
-          secondary={`${hours} Hora${hours > 1 ? 's' : ''}`}
+          secondary={`${estimatedDuration} Hora${estimatedDuration ?? 0 > 1 ? 's' : ''}`}
           primaryTypographyProps={{ fontWeight: 800 }}
           secondaryTypographyProps={{ fontWeight: 500 }}
         />
