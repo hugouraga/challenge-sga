@@ -10,9 +10,10 @@ export default function SignInForm() {
     isSubmitting,
     handleBlur,
     handleSubmit,
+    handleInputChange,
   } = useSignIn();
 
-  const hasErrors = !!emailError || !!passwordError || !!generalError;
+  const hasErrors = !!emailError || !!passwordError;
 
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -33,6 +34,7 @@ export default function SignInForm() {
         error={!!emailError}
         helperText={emailError}
         onBlur={handleBlur}
+        onChange={handleInputChange} // Remover erro geral ao modificar o campo
         disabled={isSubmitting}
       />
       <TextField
@@ -47,6 +49,7 @@ export default function SignInForm() {
         error={!!passwordError}
         helperText={passwordError}
         onBlur={handleBlur}
+        onChange={handleInputChange} // Remover erro geral ao modificar o campo
         disabled={isSubmitting}
       />
       <Button

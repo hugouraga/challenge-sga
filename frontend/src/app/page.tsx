@@ -1,7 +1,7 @@
 "use client";
-import styles from "./page.module.css";
 import React, { useCallback, useMemo, useState } from "react";
-import { Box, Button, CssBaseline, Grid, List, Typography } from "@mui/material";
+import { CssBaseline, Grid } from "@mui/material";
+import styles from "./page.module.css";
 import Header from "@/components/Header";
 import TutorialModal from "@/components/Modals/ModalTutorial";
 import { useFetchTutors } from "@/hooks/useFetchTutors";
@@ -9,9 +9,7 @@ import { tutorProps } from "@/interfaces/tutor.interface";
 import withAuth from "@/hoc/withAuth";
 import TableTutorial from "@/components/Tables/TableTutorials";
 import TutorSection from "@/components/Tutor/TutorSection";
-import Aside from "@/components/Aside";
-import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
-import Tutorial from "@/components/Tutorial/Tutorial";
+import Aside from "@/components/Aside/Aside";
 
 const Home: React.FC = () => {
   const {
@@ -52,10 +50,9 @@ const Home: React.FC = () => {
   );
 
   const filteredTutors = useMemo(
-    () =>
-      users?.filter((tutor: { name: string }) =>
-        tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
+    () => users?.filter((tutor) =>
+      tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
     [users, searchQuery]
   );
 
@@ -70,7 +67,6 @@ const Home: React.FC = () => {
         <CssBaseline />
         <Grid container className={styles.gridContainer}>
           <Header onMenuClick={setCurrentScreen} />
-
           {currentScreen === "tutores" ? (
             <>
               <Grid item xs={12} md={7.5} className={styles.gridItem}>
@@ -83,50 +79,13 @@ const Home: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12} md={4} className={styles.gridItem}>
-                <Aside>
-                  <List>
-                    {loadingSwitchingTutor ? (
-                      <SkeletonTutorial />
-                    ) : selectedTutor.id && visibleTutorials.length === 0 ? (
-                      <Box className={styles.noTutorialsBox}>
-                        <Typography variant="subtitle1">
-                          Sem tutoriais cadastrados para esse usuário
-                        </Typography>
-                      </Box>
-                    ) : (
-                      visibleTutorials.map((tutorial: any) => (
-                        <Tutorial
-                          key={tutorial.id}
-                          id={tutorial.id}
-                          estimatedDuration={tutorial.estimatedDuration}
-                          title={tutorial.title}
-                          summary={tutorial.summary}
-                          difficultyLevel={tutorial.difficultyLevel}
-                        />
-                      ))
-                    )}
-
-                    {selectedTutor.id ? (
-                      <Box className={styles.noTutorialsBox}>
-                        <Button
-                          variant="contained"
-                          color={loading ? "info" : "warning"}
-                          sx={{ mt: 3, boxShadow: 0, border: 0 }}
-                          onClick={handleOpen}
-                          disabled={loading}
-                        >
-                          Registrar tutorial
-                        </Button>
-                      </Box>
-                    ) : (
-                      <Box className={styles.noTutorialsBox}>
-                        <Typography variant="subtitle1">
-                          Selecione um tutor ao lado para visualizar as tutorias associadas a ele
-                        </Typography>
-                      </Box>
-                    )}
-                  </List>
-                </Aside>
+                <Aside
+                  tutorials={visibleTutorials}
+                  loading={loading}
+                  selectedTutor={selectedTutor}
+                  loadingSwitchingTutor={loadingSwitchingTutor}
+                  onOpen={handleOpen}
+                />
               </Grid>
             </>
           ) : (

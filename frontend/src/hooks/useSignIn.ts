@@ -12,6 +12,7 @@ interface UseSignInReturn {
   isSubmitting: boolean;
   handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function useSignIn(): UseSignInReturn {
@@ -35,6 +36,12 @@ export function useSignIn(): UseSignInReturn {
         break;
     }
   }, []);
+
+  const handleInputChange = useCallback(() => {
+    if (generalError) {
+      setGeneralError(null);
+    }
+  }, [generalError]);
 
   const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -74,5 +81,6 @@ export function useSignIn(): UseSignInReturn {
     isSubmitting,
     handleBlur,
     handleSubmit,
+    handleInputChange,
   };
 }
