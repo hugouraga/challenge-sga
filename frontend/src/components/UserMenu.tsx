@@ -23,7 +23,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ anchorElUser, handleOpenUserMenu, h
     logout();
     localStorage.removeItem('token');
     handleCloseUserMenu();
-    router.push('/');
+    router.push('/Login');
   };
 
   return (

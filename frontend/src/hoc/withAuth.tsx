@@ -12,7 +12,7 @@ const withAuth = (WrappedComponent: React.FC) => {
     useEffect(() => {
       const token = localStorage.getItem('token');
       if (!token) {
-        router.push('/');
+        router.push('/Login');
       }
     }, [router]);
 

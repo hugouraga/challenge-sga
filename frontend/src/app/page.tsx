@@ -1,152 +1,142 @@
 "use client";
+import styles from "./page.module.css";
+import React, { useCallback, useMemo, useState } from "react";
+import { Box, Button, CssBaseline, Grid, List, Typography } from "@mui/material";
+import Header from "@/components/Header";
+import TutorialModal from "@/components/Modals/ModalTutorial";
+import { useFetchTutors } from "@/hooks/useFetchTutors";
+import { tutorProps } from "@/interfaces/tutor.interface";
+import withAuth from "@/hoc/withAuth";
+import TableTutorial from "@/components/Tables/TableTutorials";
+import TutorSection from "@/components/Tutor/TutorSection";
+import Aside from "@/components/Aside";
+import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
+import Tutorial from "@/components/Tutorial/Tutorial";
 
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '@/theme/theme';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+const Home: React.FC = () => {
+  const {
+    users,
+    loading,
+    searchQuery,
+    handleSearchChange,
+    handleTutorClick,
+    tutorialsByTutorId,
+  } = useFetchTutors();
 
-export default function SignIn() {
-  const router = useRouter();
-  const { signIn } = useAuth();
+  const [selectedTutor, setSelectedTutor] = useState<tutorProps>({} as tutorProps);
+  const [loadingSwitchingTutor, setLoadingSwitchingTutor] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState<"tutores" | "tutoriais">("tutores");
 
-  const [emailError, setEmailError] = React.useState<string | null>(null);
-  const [passwordError, setPasswordError] = React.useState<string | null>(null);
-  const [generalError, setGeneralError] = React.useState<string | null>(null);
+  const handleSelect = useCallback(
+    (tutor: tutorProps) => {
+      if (tutor?.id === selectedTutor.id) return;
+      setLoadingSwitchingTutor(true);
+      setSelectedTutor(tutor);
+      handleTutorClick(tutor);
+    },
+    [handleTutorClick, selectedTutor.id]
+  );
 
-  const validateEmail = (email: string) => {
-    if (!email.includes('@')) {
-      return 'Email deve conter "@"';
-    }
-    return null;
-  };
+  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleClose = useCallback(() => setOpen(false), []);
 
-  const validatePassword = (password: string) => {
-    if (password.length < 8) {
-      return 'Senha deve conter pelo menos 8 caracteres.';
-    }
-    return null;
-  };
+  const handleSearchChangeWithReset = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (selectedTutor) {
+        setSelectedTutor({} as tutorProps);
+      }
+      handleSearchChange(event);
+    },
+    [handleSearchChange, selectedTutor]
+  );
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = String(data.get('email')) ?? '';
-    const password = String(data.get('password')) ?? '';
+  const filteredTutors = useMemo(
+    () =>
+      users?.filter((tutor: { name: string }) =>
+        tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [users, searchQuery]
+  );
 
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-
-    if (emailError || passwordError) {
-      setEmailError(emailError);
-      setPasswordError(passwordError);
-      setGeneralError(null);
-      return;
-    }
-
-    setEmailError(null);
-    setPasswordError(null);
-
-    try {
-      await signIn(email, password);
-      router.push('/Home');
-    } catch (error: any) {
-      setGeneralError('Erro ao realizar login. Verifique suas credenciais e tente novamente.');
-    }
-  };
-
-  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
-    switch (name) {
-      case 'email':
-        setEmailError(validateEmail(value));
-        break;
-      case 'password':
-        setPasswordError(validatePassword(value));
-        break;
-    }
-  };
+  const visibleTutorials = useMemo(() => {
+    setLoadingSwitchingTutor(false);
+    return selectedTutor ? tutorialsByTutorId[selectedTutor.id] || [] : [];
+  }, [selectedTutor, tutorialsByTutorId]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+    <>
+      <main className={styles.main}>
         <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login - SGA
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            {generalError && (
-              <Typography color="error" variant="body2" align="center" sx={{ mb: 2 }}>
-                {generalError}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              error={!!emailError}
-              helperText={emailError}
-              onBlur={handleBlur}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              error={!!passwordError}
-              helperText={passwordError}
-              onBlur={handleBlur}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              color="primary"
-            >
-              Entrar
-            </Button>
-            <Grid container>
-              <Grid item>
-                <Link href="/Cadastro" variant="body2">
-                  {"Não tem conta? Cadastre-se"}
-                </Link>
+        <Grid container className={styles.gridContainer}>
+          <Header onMenuClick={setCurrentScreen} />
+
+          {currentScreen === "tutores" ? (
+            <>
+              <Grid item xs={12} md={7.5} className={styles.gridItem}>
+                <TutorSection
+                  searchQuery={searchQuery}
+                  handleSearchChangeWithReset={handleSearchChangeWithReset}
+                  filteredTutors={filteredTutors}
+                  handleTutorClick={handleSelect}
+                  selectedTutor={selectedTutor}
+                />
               </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+              <Grid item xs={12} md={4} className={styles.gridItem}>
+                <Aside>
+                  <List>
+                    {loadingSwitchingTutor ? (
+                      <SkeletonTutorial />
+                    ) : selectedTutor.id && visibleTutorials.length === 0 ? (
+                      <Box className={styles.noTutorialsBox}>
+                        <Typography variant="subtitle1">
+                          Sem tutoriais cadastrados para esse usuário
+                        </Typography>
+                      </Box>
+                    ) : (
+                      visibleTutorials.map((tutorial: any) => (
+                        <Tutorial
+                          key={tutorial.id}
+                          id={tutorial.id}
+                          estimatedDuration={tutorial.estimatedDuration}
+                          title={tutorial.title}
+                          summary={tutorial.summary}
+                          difficultyLevel={tutorial.difficultyLevel}
+                        />
+                      ))
+                    )}
+
+                    {selectedTutor.id ? (
+                      <Box className={styles.noTutorialsBox}>
+                        <Button
+                          variant="contained"
+                          color={loading ? "info" : "warning"}
+                          sx={{ mt: 3, boxShadow: 0, border: 0 }}
+                          onClick={handleOpen}
+                          disabled={loading}
+                        >
+                          Registrar tutorial
+                        </Button>
+                      </Box>
+                    ) : (
+                      <Box className={styles.noTutorialsBox}>
+                        <Typography variant="subtitle1">
+                          Selecione um tutor ao lado para visualizar as tutorias associadas a ele
+                        </Typography>
+                      </Box>
+                    )}
+                  </List>
+                </Aside>
+              </Grid>
+            </>
+          ) : (
+            <TableTutorial />
+          )}
+        </Grid>
+      </main>
+      <TutorialModal open={open} handleClose={handleClose} selectedTutor={selectedTutor} />
+    </>
   );
-}
+};
+
+export default withAuth(Home);
