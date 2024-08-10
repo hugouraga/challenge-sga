@@ -1,10 +1,9 @@
-import styles from '../../app/page.module.css';
-
 import React from 'react';
 import { Box, Typography, InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { tutorProps } from '@/interfaces/tutor.interface';
-import TutorsList from './PaginatedTutors';
+import PaginatedTutors from './PaginatedTutors';
+import styles from './TutorSection.module.css';
 
 interface TutorSectionProps {
   searchQuery: string;
@@ -23,22 +22,46 @@ const TutorSection: React.FC<TutorSectionProps> = ({
 }) => {
   return (
     <>
-      <Box className={styles.searchBox}>
-        <Typography fontSize={30} fontWeight={700}>
+      <Box
+        className={styles.searchBox}
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 2,
+        }}
+      >
+        <Typography
+          fontSize={{ xs: 24, sm: 30 }}
+          fontWeight={700}
+          sx={{ mb: { xs: 2, sm: 0 } }}
+        >
           Lista de tutores
         </Typography>
-        <Box className={styles.searchInput}>
+        <Box
+          className={styles.searchInput}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: { xs: '100%', sm: 'auto' },
+          }}
+        >
           <SearchIcon />
           <InputBase
             placeholder="Buscar..."
             value={searchQuery}
             onChange={handleSearchChangeWithReset}
-            sx={{ marginLeft: 1, flex: 1 }}
+            sx={{
+              marginLeft: 1,
+              flex: 1,
+              width: { xs: '100%', sm: 'auto' },
+            }}
           />
         </Box>
       </Box>
 
-      <TutorsList
+      <PaginatedTutors
         filteredTutors={filteredTutors}
         handleTutorClick={handleTutorClick}
         selectedTutor={selectedTutor}

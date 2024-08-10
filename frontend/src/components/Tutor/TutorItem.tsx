@@ -25,28 +25,27 @@ const TutorialItem: React.FC<TutorialItemProps> = ({ index, tutor, selected, onC
         borderRadius: '24px',
         cursor: 'pointer',
         justifyContent: 'space-between',
-        overflowX: 'auto'
+        overflow: 'hidden',
+        minWidth: '600px',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between', minWidth: '400px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }} minWidth={150}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between', minWidth: '0' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', minWidth: '150px' }}>
           <Avatar
             alt="Icone usuário"
             src={avatarImage}
             sx={{ width: 40, height: 40 }}
           />
-          <Typography fontSize={17} fontWeight={600} sx={{ marginLeft: '16px' }}>
+          <Typography fontSize={17} fontWeight={600} sx={{ marginLeft: '16px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {truncatedName}
           </Typography>
         </Box>
-        <Typography fontSize={15} fontWeight={400} minWidth={150}>
+        <Typography fontSize={15} fontWeight={400} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '150px' }}>
           {tutor.email}
         </Typography>
-        {!isSmallScreen && (
-          <Typography fontSize={15} marginRight={6}>
-            {formatDateToBrazilian(tutor.createdAt)}
-          </Typography>
-        )}
+        <Typography fontSize={15} marginRight={6} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '120px' }}>
+          {formatDateToBrazilian(tutor.createdAt)}
+        </Typography>
       </Box>
     </ListItem>
   );

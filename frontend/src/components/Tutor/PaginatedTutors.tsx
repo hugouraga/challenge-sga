@@ -11,7 +11,7 @@ interface Props {
   handleTutorClick: (tutor: tutorProps) => void;
 }
 
-const TutorsList: React.FC<Props> = ({ filteredTutors, handleTutorClick, selectedTutor }) => {
+const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, selectedTutor }) => {
   const [page, setPage] = useState<number>(1);
   const itemsPerPage = 6;
 
@@ -30,42 +30,48 @@ const TutorsList: React.FC<Props> = ({ filteredTutors, handleTutorClick, selecte
   const totalPages = useMemo(() => Math.ceil(filteredTutors.length / itemsPerPage), [filteredTutors]);
 
   return (
-    <>
-      {paginatedTutors?.length > 0 ? (
-        paginatedTutors.map((tutor, index) => (
-          <TutorialItem
-            key={tutor.id}
-            tutor={tutor}
-            index={index}
-            selected={selectedTutor?.id === tutor.id}
-            onClick={() => handleTutorClick(tutor)}
-          />
-        ))
-      ) : (
-        <Box
-          sx={{
-            textAlign: 'center',
-            mt: 'auto',
-            mb: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            height: '100%',
-            marginTop: -12,
-          }}
-        >
-          <Typography variant="h6">Nenhum usuário identificado</Typography>
-        </Box>
-      )}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        minHeight: '0',
+        overflowX: 'auto',  // Permite a rolagem horizontal na tabela como um todo
+      }}
+    >
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
+        {paginatedTutors?.length > 0 ? (
+          paginatedTutors.map((tutor, index) => (
+            <TutorialItem
+              key={tutor.id}
+              tutor={tutor}
+              index={index}
+              selected={selectedTutor?.id === tutor.id}
+              onClick={() => handleTutorClick(tutor)}
+            />
+          ))
+        ) : (
+          <Box
+            sx={{
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              mt: 12,
+              mb: 12,
+            }}
+          >
+            <Typography variant="h6">Nenhum usuário identificado</Typography>
+          </Box>
+        )}
+      </Box>
 
       <Box
         sx={{
-          textAlign: 'right',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          marginRight: 1,
-          marginTop: 3,
+          textAlign: 'center',
+          mt: 2,
         }}
       >
         <Stack spacing={2}>
@@ -78,8 +84,8 @@ const TutorsList: React.FC<Props> = ({ filteredTutors, handleTutorClick, selecte
           />
         </Stack>
       </Box>
-    </>
+    </Box>
   );
 };
 
-export default TutorsList;
+export default PaginatedTutors;
