@@ -2,7 +2,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { CssBaseline, Grid } from "@mui/material";
 import styles from "./page.module.css";
-import Header from "@/components/Header";
 import TutorialModal from "@/components/Modals/ModalTutorial";
 import { useFetchTutors } from "@/hooks/useFetchTutors";
 import { tutorProps } from "@/interfaces/tutor.interface";
@@ -10,6 +9,7 @@ import withAuth from "@/hoc/withAuth";
 import TableTutorial from "@/components/Tables/TableTutorials";
 import TutorSection from "@/components/Tutor/TutorSection";
 import Aside from "@/components/Aside/Aside";
+import Header from "@/components/Menu/Header";
 
 const Home: React.FC = () => {
   const {

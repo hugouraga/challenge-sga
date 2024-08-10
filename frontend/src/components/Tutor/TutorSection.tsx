@@ -3,8 +3,8 @@ import styles from '../../app/page.module.css';
 import React from 'react';
 import { Box, Typography, InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import TutorsList from '@/components/paginatedTutors';
 import { tutorProps } from '@/interfaces/tutor.interface';
+import TutorsList from './PaginatedTutors';
 
 interface TutorSectionProps {
   searchQuery: string;
