@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Table,
@@ -8,119 +8,182 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,
   TextField,
   Typography,
+  CircularProgress,
+  Stack,
+  Pagination,
+  Select,
+  MenuItem,
+  SelectChangeEvent
 } from "@mui/material";
 import { tutorialInterface } from "@/interfaces/tutorial.interta";
+import { useAppDispatch } from '@/store/hooks';
+import { fetchPaginatedTutorials } from '@/store/appDataSlice/appDataSlice';
+import { debounce } from '@/utils/debounce';
 
-interface TableTutorialProps {
-  tutorials: tutorialInterface[];
+export interface fetchParams {
+  page?: number;
+  rowsPerPage?: number;
+  filters?: any;
 }
 
-const TableTutorial: React.FC<TableTutorialProps> = ({ tutorials }) => {
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+const TableTutorial: React.FC = () => {
+  const [tutorials, setTutorials] = useState<tutorialInterface[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [rowsPerPage] = useState<number>(10);
   const [filters, setFilters] = useState({
     title: '',
     duration: '',
-    difficulty: ''
+    difficultyLevel: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const dispatch = useAppDispatch();
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const fetchTutorials = useCallback(async (updatedFilters = filters) => {
+    setLoading(true);
+    try {
+      const result = await dispatch(fetchPaginatedTutorials({
+        page,
+        rowsPerPage,
+        filters: updatedFilters,
+      })).unwrap();
+      setTutorials(result.tutorials);
+      setTotalPages(result.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch tutorials:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    fetchTutorials();
+  }, [fetchTutorials]);
+
+  const debouncedFetch = useCallback(
+    debounce((updatedFilters) => {
+      setPage(1);
+      fetchTutorials(updatedFilters);
+    }, 500),
+    [fetchTutorials]
+  );
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedFilters = {
+      ...filters,
+      [event.target.name]: event.target.value,
+    };
+    setFilters(updatedFilters);
+    setLoading(true);
+    debouncedFetch(updatedFilters);
+  };
+
+  const handleDifficultyChange = (event: SelectChangeEvent<string>) => {
+    const updatedFilters = {
+      ...filters,
+      difficultyLevel: event.target.value,
+    };
+    setFilters(updatedFilters);
+    setLoading(true);
+    debouncedFetch(updatedFilters);
+  };
+
+  const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const mapDifficultyToPortuguese = (difficulty?: string) => {
+    switch (difficulty) {
+      case 'beginner':
+        return 'Iniciante';
+      case 'intermediate':
+        return 'Intermediário';
+      case 'advanced':
+        return 'Avançado';
+      default:
+        return 'Nível não especificado';
+    }
   };
-
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({
-      ...filters,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const filteredTutorials = useMemo(() => {
-    return tutorials.filter((tutorial) => {
-      if (!tutorial) return false;
-      return (
-        (tutorial.title ?? '').toLowerCase().includes(filters.title.toLowerCase()) &&
-        (tutorial.estimatedDuration ?? '').toLowerCase().includes(filters.duration.toLowerCase()) &&
-        (tutorial.difficultyLevel ?? '').toLowerCase().includes(filters.difficulty.toLowerCase())
-      );
-    });
-  }, [filters, tutorials]);
-
-  const visibleTutorials = useMemo(() => {
-    return filteredTutorials.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  }, [filteredTutorials, page, rowsPerPage]);
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', padding: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Filtros
-      </Typography>
+    <Paper sx={{ width: '100%', overflow: 'hidden', padding: 3, backgroundColor: '#ffffff' }}>
+      <Typography fontSize={30} fontWeight={700}>Lista de tutoriais</Typography>
       <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
-        <TextField
-          label="Título"
-          name="title"
-          value={filters.title}
-          onChange={handleFilterChange}
-          variant="outlined"
-          size="small"
-        />
-        <TextField
-          label="Duração"
-          name="duration"
-          value={filters.duration}
-          onChange={handleFilterChange}
-          variant="outlined"
-          size="small"
-        />
-        <TextField
-          label="Nível de Dificuldade"
+        <TextField label="Título" name="title" value={filters.title} onChange={handleFilterChange} variant="outlined" size="small" sx={{ backgroundColor: '#ffffff' }} />
+        <TextField label="Duração" name="duration" value={filters.duration} onChange={handleFilterChange} variant="outlined" size="small" sx={{ backgroundColor: '#ffffff' }} />
+        <Select
+          labelId="select-label"
           name="difficulty"
-          value={filters.difficulty}
-          onChange={handleFilterChange}
+          value={filters.difficultyLevel}
+          onChange={handleDifficultyChange}
           variant="outlined"
           size="small"
-        />
+          sx={{ backgroundColor: '#ffffff', minWidth: 150 }}
+          displayEmpty
+        >
+          <MenuItem value="">Todos</MenuItem>
+          <MenuItem value="beginner">Iniciante</MenuItem>
+          <MenuItem value="intermediate">Intermediário</MenuItem>
+          <MenuItem value="advanced">Avançado</MenuItem>
+        </Select>
       </Box>
 
-      <TableContainer>
-        <Table stickyHeader aria-label="tabela de tutoriais">
-          <TableHead>
-            <TableRow>
-              <TableCell>Título</TableCell>
-              <TableCell>Duração Estimada</TableCell>
-              <TableCell>Nível de Dificuldade</TableCell>
-              <TableCell>Deletado</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {visibleTutorials.map((tutorial) => (
-              <TableRow hover key={tutorial.id}>
-                <TableCell>{tutorial.title}</TableCell>
-                <TableCell>{tutorial.estimatedDuration}</TableCell>
-                <TableCell>{tutorial.difficultyLevel}</TableCell>
-                <TableCell>{tutorial.isDeleted ? "Sim" : "Não"}</TableCell>
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 16 }}>
+          <CircularProgress />
+          <Typography variant="subtitle1" sx={{ ml: 2 }}>Carregando...</Typography>
+        </Box>
+      ) : (
+        <TableContainer>
+          <Table stickyHeader aria-label="tabela de tutoriais">
+            <TableHead>
+              <TableRow>
+                <TableCell>Título</TableCell>
+                <TableCell>Descrição</TableCell>
+                <TableCell>Duração Estimada</TableCell>
+                <TableCell>Nível de Dificuldade</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={filteredTutorials.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+            </TableHead>
+            <TableBody>
+              {tutorials?.map((tutorial) => (
+                <TableRow hover key={tutorial.id}>
+                  <TableCell>{tutorial.title}</TableCell>
+                  <TableCell>{tutorial.summary}</TableCell>
+                  <TableCell>{tutorial.estimatedDuration}</TableCell>
+                  <TableCell>{mapDifficultyToPortuguese(tutorial.difficultyLevel)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      {tutorials?.length === 0 && !loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 16 }}>
+          <Typography variant="subtitle1">Não existem tutoriais para serem exibidos.</Typography>
+        </Box>
+      )}
+      <Box
+        sx={{
+          textAlign: 'right',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          marginRight: 1,
+          marginTop: 3,
+        }}
+      >
+        <Stack spacing={2}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handleChangePage}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Stack>
+      </Box>
     </Paper>
   );
 };

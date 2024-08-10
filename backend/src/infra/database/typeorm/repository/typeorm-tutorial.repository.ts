@@ -20,7 +20,6 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
   ) {}
 
   async getAll(
-    creatorId?: string,
     filters?: TutorialFilter,
     pagination?: TutorialPagination,
   ): Promise<DomainTutorial[]> {
@@ -31,40 +30,67 @@ export class TypeOrmTutorialRepository implements TutorialRepository {
           title: `%${filters.title}%`,
         });
       }
+      if (filters.duration) {
+        query.andWhere('tutorial.estimated_duration LIKE :estimatedDuration', {
+          estimatedDuration: `%${filters.duration}%`,
+        });
+      }
       if (filters.summary) {
         query.andWhere('tutorial.summary LIKE :summary', {
           summary: `%${filters.summary}%`,
         });
       }
-
       if (filters.creatorId) {
-        query.andWhere('tutorial.creatorId = :creatorId', {
+        query.andWhere('tutorial.creator_id = :creatorId', {
           creatorId: filters.creatorId,
         });
       }
-
       if (filters.difficultyLevel) {
-        query.andWhere('tutorial.difficultyLevel = :difficultyLevel', {
+        query.andWhere('tutorial.difficulty_level = :difficultyLevel', {
           difficultyLevel: filters.difficultyLevel,
         });
       }
       if (filters.tags && filters.tags.length > 0) {
-        query.andWhere('tutorial.tags && ARRAY[:...tags]', {
+        query.andWhere('tutorial.tags @> :tags', {
           tags: filters.tags,
         });
       }
     }
-
-    if (creatorId) {
-      query.andWhere('tutorial.creator_id = :creator_id', {
-        creator_id: creatorId,
-      });
+    if (pagination) {
+      query.skip(pagination.offset).take(pagination.limit);
     }
-
-    if (pagination) query.skip(pagination.offset).take(pagination.limit);
 
     const tutorials = await query.getMany();
     return tutorials.map((tutorial) => tutorial.toDomain());
+  }
+
+  async count(filters?: TutorialFilter): Promise<number> {
+    const query = this.tutorialRepository.createQueryBuilder('tutorial');
+
+    if (filters) {
+      if (filters.title) {
+        query.andWhere('tutorial.title LIKE :title', {
+          title: `%${filters.title}%`,
+        });
+      }
+      if (filters.duration) {
+        query.andWhere('tutorial.estimated_duration LIKE :estimatedDuration', {
+          estimatedDuration: `%${filters.duration}%`,
+        });
+      }
+      if (filters.summary) {
+        query.andWhere('tutorial.summary LIKE :summary', {
+          summary: `%${filters.summary}%`,
+        });
+      }
+      if (filters.difficultyLevel) {
+        query.andWhere('tutorial.difficulty_level = :difficultyLevel', {
+          difficultyLevel: filters.difficultyLevel,
+        });
+      }
+    }
+
+    return query.getCount();
   }
 
   async getById(id: string): Promise<DomainTutorial> {

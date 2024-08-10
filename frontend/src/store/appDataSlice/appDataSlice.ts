@@ -1,25 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-
 import { tutorProps } from '@/interfaces/tutor.interface';
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
-
-export interface TutorialInterface {
-  id: string;
-  title: string;
-  hours: number;
-  description: string;
-  category: string;
-  summary?: string;
-  estimatedDuration?: string;
-  difficultyLevel?: string;
-  creatorId?: string;
-  createdAt?: string;
-}
-
+import { fetchParams } from '@/components/Tables/TableTutorials';
+import { TutorialPaginatedResponse } from '@/interfaces/paginated.interface';
 
 interface ContentManagementState {
   users: tutorProps[];
-  tutorialsByTutorId: { [key: string]: TutorialInterface[] };
+  tutorials: tutorialInterface[];
+  tutorialsByTutorId: { [key: string]: tutorialInterface[] };
   loading: boolean;
   error: string | null;
   searchQuery: string;
@@ -31,6 +19,7 @@ interface ContentManagementState {
 
 const initialState: ContentManagementState = {
   users: [],
+  tutorials: [],
   tutorialsByTutorId: {},
   loading: false,
   error: null,
@@ -41,7 +30,6 @@ const initialState: ContentManagementState = {
   hasPreviousPage: false,
 };
 
-// Fetch Tutors
 export const fetchTutors = createAsyncThunk(
   'contentManagement/fetchTutors',
   async ({ page, query }: { page: number; query: string }) => {
@@ -60,14 +48,12 @@ export const fetchTutors = createAsyncThunk(
   }
 );
 
-
-// Fetch Tutorials for a Specific Tutor
-export const fetchTutorTutorials = createAsyncThunk(
-  'contentManagement/fetchTutorTutorials',
-  async (creatorId: string) => {
+export const fetchTutorialsByCreatorId = createAsyncThunk(
+  'contentManagement/fetchTutorialsByCreatorId',
+  async ({ creatorId }: { creatorId: string }) => {
     const token = localStorage.getItem('token');
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/list?creatorId=${creatorId}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/list/${creatorId}`,
       {
         method: 'GET',
         headers: {
@@ -81,7 +67,42 @@ export const fetchTutorTutorials = createAsyncThunk(
   }
 );
 
-// Create Tutorial
+export const fetchPaginatedTutorials = createAsyncThunk(
+  'contentManagement/fetchPaginatedTutorials',
+  async ({ page = 1, rowsPerPage = 10, filters = {} }: fetchParams) => {
+    const token = localStorage.getItem('token');
+    const queryParams = new URLSearchParams({
+      ...(filters?.title && { title: filters.title }),
+      ...(filters?.difficultyLevel && { difficultyLevel: filters.difficultyLevel }),
+      ...(filters?.duration && { duration: filters.duration }),
+      offset: ((page - 1) * rowsPerPage).toString(),
+      limit: rowsPerPage.toString(),
+    });
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/list?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const data: TutorialPaginatedResponse = await response.json();
+
+    return {
+      tutorials: data.tutorials,
+      total: data.total,
+      page: data.page,
+      totalPages: data.totalPages,
+      hasNextPage: data.hasNextPage,
+      hasPreviousPage: data.hasPreviousPage,
+    };
+  }
+);
+
 export const createTutorial = createAsyncThunk(
   'contentManagement/createTutorial',
   async (tutorial: tutorialInterface) => {
@@ -97,11 +118,10 @@ export const createTutorial = createAsyncThunk(
         body: JSON.stringify(tutorial),
       }
     );
-    return response.json();   
+    return response.json();
   }
 );
 
-// Edit Tutorial
 export const editTutorial = createAsyncThunk(
   'contentManagement/editTutorial',
   async (tutorial: any) => {
@@ -122,13 +142,12 @@ export const editTutorial = createAsyncThunk(
   }
 );
 
-// Delete Tutorial
 export const deleteTutorial = createAsyncThunk(
   'contentManagement/deleteTutorial',
   async (tutorialId: string) => {
     const token = localStorage.getItem('token');
     await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/delete/${tutorialId}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/delete/${tutorialId}`,
       {
         method: 'DELETE',
         headers: {
@@ -143,14 +162,12 @@ export const deleteTutorial = createAsyncThunk(
   }
 );
 
-// Edit User (Tutor)
 export const editUser = createAsyncThunk(
   'contentManagement/editUser',
   async (tutorial: tutorProps) => {
     const token = localStorage.getItem('token');
-
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/update`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorials/update`,
       {
         method: 'PUT',
         headers: {
@@ -177,7 +194,6 @@ const contentManagementSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Handle fetchTutors
       .addCase(fetchTutors.pending, (state) => {
         state.loading = true;
       })
@@ -193,30 +209,30 @@ const contentManagementSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch tutors';
       })
-  
-      // Handle fetchTutorTutorials
-      .addCase(fetchTutorTutorials.pending, (state) => {
+      .addCase(fetchTutorialsByCreatorId.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchTutorTutorials.fulfilled, (state, action: PayloadAction<{ creatorId: string; tutorials: TutorialInterface[] }>) => {
+      .addCase(fetchTutorialsByCreatorId.fulfilled, (state, action: PayloadAction<{ creatorId: string | undefined; tutorials: tutorialInterface[] }>) => {
         state.loading = false;
         const { creatorId, tutorials } = action.payload;
-        state.tutorialsByTutorId[creatorId] = tutorials;
+        if (creatorId) {
+          state.tutorialsByTutorId[creatorId] = tutorials;
+        } else {
+          console.error('Received undefined creatorId. Tutorials will not be stored.');
+        }
       })
-      .addCase(fetchTutorTutorials.rejected, (state, action) => {
+      .addCase(fetchTutorialsByCreatorId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch tutorials for tutor';
       })
-  
-      // Handle createTutorial
       .addCase(createTutorial.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createTutorial.fulfilled, (state, action: PayloadAction<TutorialInterface>) => {
+      .addCase(createTutorial.fulfilled, (state, action: PayloadAction<tutorialInterface>) => {
         state.loading = false;
         const newTutorial = action.payload;
         const tutorId = newTutorial.creatorId;
-        if(!tutorId) return;
+        if (!tutorId) return;
         if (state.tutorialsByTutorId[tutorId]) {
           state.tutorialsByTutorId[tutorId].push(newTutorial);
         } else {
@@ -227,16 +243,14 @@ const contentManagementSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to create tutorial';
       })
-  
-      // Handle editTutorial
       .addCase(editTutorial.pending, (state) => {
         state.loading = true;
       })
-      .addCase(editTutorial.fulfilled, (state, action: PayloadAction<TutorialInterface>) => {
+      .addCase(editTutorial.fulfilled, (state, action: PayloadAction<tutorialInterface>) => {
         state.loading = false;
         const updatedTutorial = action.payload;
         const tutorId = updatedTutorial.creatorId;
-        if(!tutorId) return;
+        if (!tutorId) return;
         if (state.tutorialsByTutorId[tutorId]) {
           const index = state.tutorialsByTutorId[tutorId].findIndex(t => t.id === updatedTutorial.id);
           if (index !== -1) {
@@ -248,8 +262,6 @@ const contentManagementSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to edit tutorial';
       })
-  
-      // Handle deleteTutorial
       .addCase(deleteTutorial.pending, (state) => {
         state.loading = true;
       })
@@ -264,24 +276,23 @@ const contentManagementSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to delete tutorial';
       })
-  
-      // Handle editUser
-      .addCase(editUser.pending, (state) => {
+      .addCase(fetchPaginatedTutorials.pending, (state) => {
         state.loading = true;
       })
-      .addCase(editUser.fulfilled, (state, action: PayloadAction<tutorProps>) => {
+      .addCase(fetchPaginatedTutorials.fulfilled, (state, action: PayloadAction<{ tutorials: tutorialInterface[]; total: number; page: number; totalPages: number; hasNextPage: boolean; hasPreviousPage: boolean; }>) => {
         state.loading = false;
-        const updatedUser = action.payload;
-        const index = state.users.findIndex(u => u.id === updatedUser.id);
-        if (index !== -1) {
-          state.users[index] = updatedUser;
-        }
+        const { tutorials, total, page, totalPages, hasNextPage, hasPreviousPage } = action.payload;
+        state.tutorials = tutorials;
+        state.page = page;
+        state.totalPages = totalPages;
+        state.hasNextPage = hasNextPage;
+        state.hasPreviousPage = hasPreviousPage;
       })
-      .addCase(editUser.rejected, (state, action) => {
+      .addCase(fetchPaginatedTutorials.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to edit user';
+        state.error = action.error.message || 'Failed to fetch paginated tutorials';
       });
-  }
+  },
 });
 
 export const { setSearchQuery, incrementPage } = contentManagementSlice.actions;

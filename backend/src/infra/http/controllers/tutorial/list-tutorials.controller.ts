@@ -1,5 +1,6 @@
 import { GetTutorialsUseCase } from '@/application/use-cases/tutorial/get-tutorials.use-case';
 import { CustomError } from '@/utils/error/custom.error';
+import { AuthGuard } from '../../auth/jwt-auth.guard';
 import {
   Controller,
   Get,
@@ -8,7 +9,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '../../auth/jwt-auth.guard';
+import {
+  TutorialFilter,
+  TutorialPagination,
+} from '@/domain/repository/tutorial.repository';
 
 @Controller('tutorials')
 export class ListTutorialsController {
@@ -16,10 +20,41 @@ export class ListTutorialsController {
 
   @UseGuards(AuthGuard)
   @Get('/list')
-  async list(@Query('creatorId') creatorId?: string): Promise<any> {
+  async list(
+    @Query('creatorId') creatorId?: string,
+    @Query('title') title?: string,
+    @Query('duration') duration?: number,
+    @Query('summary') summary?: string,
+    @Query('difficultyLevel') difficultyLevel?: string,
+    @Query('offset') offset?: string,
+    @Query('limit') limit?: string,
+  ): Promise<any> {
     try {
-      const tutorials = await this.listTutorialsUseCase.execute({ creatorId });
-      return tutorials;
+      const filters: TutorialFilter = {
+        creatorId,
+        title,
+        duration,
+        summary,
+        difficultyLevel,
+      };
+
+      const pagination: TutorialPagination = {
+        offset: offset ? parseInt(offset, 10) : 0,
+        limit: limit ? parseInt(limit, 10) : 10,
+      };
+
+      if (isNaN(pagination.offset) || pagination.offset < 0) {
+        throw new CustomError('Offset inválido', HttpStatus.BAD_REQUEST);
+      }
+
+      if (isNaN(pagination.limit) || pagination.limit <= 0) {
+        throw new CustomError('Limit inválido', HttpStatus.BAD_REQUEST);
+      }
+
+      return this.listTutorialsUseCase.execute({
+        filters,
+        pagination,
+      });
     } catch (error) {
       if (error instanceof CustomError) {
         throw new HttpException(error.message, error.statusCode);

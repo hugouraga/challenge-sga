@@ -5,15 +5,16 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import AdbIcon from '@mui/icons-material/Adb';
 import NavMenu from './NavMenu';
 import UserMenu from './UserMenu';
 import NavButton from './NavButton';
 import { useAuth } from '@/context/AuthContext';
 
-const pages = ['Turoriais', 'Tutorias'];
+interface HeaderProps {
+  onMenuClick: (screen: 'tutores' | 'tutoriais') => void;
+}
 
-const Header: React.FC = () => {
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const { user } = useAuth();
@@ -35,19 +36,28 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" style={{ borderStyle: 'none', boxShadow: 'none', marginBottom: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 12 }}>
-      <Toolbar >
+    <AppBar
+      position="static"
+      style={{
+        borderStyle: 'none',
+        boxShadow: 'none',
+        marginBottom: 16,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        padding: 12,
+      }}
+    >
+      <Toolbar>
         <NavMenu
           anchorElNav={anchorElNav}
           handleOpenNavMenu={handleOpenNavMenu}
           handleCloseNavMenu={handleCloseNavMenu}
         />
-        {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
         <Typography
           variant="h6"
           noWrap
           component="a"
-          href="#app-bar-with-responsive-menu"
+          href="#"
           sx={{
             mr: 2,
             display: { xs: 'none', md: 'flex' },
@@ -62,8 +72,12 @@ const Header: React.FC = () => {
         </Typography>
 
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          <NavButton href="/Home">Inicio</NavButton>
-          {/* <NavButton href="/Tutoriais">Tutoriais</NavButton> */}
+          <NavButton href="#" onClick={() => onMenuClick('tutores')}>
+            Inicio
+          </NavButton>
+          <NavButton href="#" onClick={() => onMenuClick('tutoriais')}>
+            Tutoriais
+          </NavButton>
         </Box>
 
         <UserMenu
@@ -75,6 +89,6 @@ const Header: React.FC = () => {
       </Toolbar>
     </AppBar>
   );
-}
+};
 
 export default Header;

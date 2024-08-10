@@ -5,18 +5,51 @@
   align-items: center;
   padding: 1rem;
   min-height: 100vh;
-  background: #f1f5fb;
-  /* overflow-y: auto; */
+  background: #f1f5fb; 
 }
 
 .gridContainer {
-  flex-grow: 1;
-  overflow-y: auto; /* Adiciona rolagem vertical */
+  max-width: 1440px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  padding-bottom: 40px;
+  background-color: white;
+  justify-content: space-around;
+  margin-top: 24px;
 }
 
 .gridItem {
   padding: 16px;
-  background: #f1f5fb;
+  margin-top: 24px;
+  margin-bottom: 40px;
+}
+
+
+.searchBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.searchInput {
+  display: flex;
+  align-items: center;
+  background-color: var(--secondary-color);
+  padding: 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+}
+
+.noTutorialsBox {
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  margin-top: 32px;
 }
 
 .description {

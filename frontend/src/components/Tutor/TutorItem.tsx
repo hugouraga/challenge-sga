@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Avatar, Box, ListItem, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { TutorialItemProps } from './TutorialItemProps';
+import { TutorialItemProps } from '../Tutorial/TutorialItemProps';
 import { formatDateToBrazilian } from '@/utils/dateFormatter';
 import { getAvatarImage } from '@/utils/random-icon.images';
 
@@ -17,10 +17,10 @@ const TutorialItem: React.FC<TutorialItemProps> = ({ index, tutor, selected, onC
     <ListItem
       key={index}
       onClick={onClick}
-      sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        padding: '16px', 
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '16px',
         backgroundColor: selected ? '#f1f5fb' : 'transparent',
         borderRadius: '24px',
         cursor: 'pointer',
