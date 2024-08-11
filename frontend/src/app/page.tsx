@@ -72,7 +72,14 @@ const Home: React.FC = () => {
   );
 
   const visibleTutorials = useMemo(() => {
-    setLoadingSwitchingTutor(false);
+    if (selectedTutor) {
+      setTimeout(() => {
+        setLoadingSwitchingTutor(false);
+      }, 500);
+    } else {
+      setLoadingSwitchingTutor(false);
+    }
+
     return selectedTutor ? tutorialsByTutorId[selectedTutor.id] || [] : [];
   }, [selectedTutor, tutorialsByTutorId]);
 
