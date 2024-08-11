@@ -21,6 +21,10 @@
 
 O uso de **adaptadores** garante que o núcleo da aplicação (domínio) não seja afetado por mudanças em detalhes externos, como frameworks ou bancos de dados. Com a aplicação de **DDD (Domain-Driven Design)**, nossos casos de uso são profundamente testados, assegurando que o comportamento da aplicação seja exatamente o esperado.
 
+## Apresentação projeto
+
+https://www.youtube.com/watch?v=yiYZQ7VMrKE
+
 ## 🛠️ Tecnologias Utilizadas
 
 Este projeto foi construído utilizando as seguintes tecnologias e práticas:
