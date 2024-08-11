@@ -4,7 +4,7 @@ import React from "react";
 import { Box, Typography, Button, CircularProgress, List } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tutorProps } from "@/interfaces/tutor.interface";
-import Tutorial from "@/components/Tutorial/Tutorial";
+import TutorialList from "@/components/Tutorial/TutorialList";
 import SkeletonTutorial from "@/components/Skeletons/SkeletonTutorial";
 import styles from "./Aside.module.css";
 
@@ -37,19 +37,15 @@ const Aside: React.FC<AsideProps> = React.memo(({
         <Box className={styles.noTutorialsBox}>
           <Typography variant="subtitle1">Sem tutoriais cadastrados para esse usuário</Typography>
         </Box>
-      )
+      );
     }
 
-    return tutorials.map((tutorial) => (
-      <Tutorial
-        key={tutorial.id}
-        id={tutorial.id}
-        estimatedDuration={tutorial.estimatedDuration}
-        title={tutorial.title}
-        summary={tutorial.summary}
-        difficultyLevel={tutorial.difficultyLevel}
+    return (
+      <TutorialList
+        tutorials={tutorials}
+        selectedTutorialId={selectedTutor.id}
       />
-    ));
+    );
   };
 
   return (

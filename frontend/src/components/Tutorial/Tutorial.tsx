@@ -5,26 +5,27 @@ import { useAppDispatch } from '@/store/hooks';
 import { ListItem, ListItemText, IconButton, Avatar, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-import FeedbackSnackbar from '../Feedback/FeedbackSnackbar';
-import { tutorialInterface } from '@/interfaces/tutorial.interta';
 import EditTutorialDialog from './Dialogs/EditTutorialDialog';
 import DeleteTutorialDialog from './Dialogs/DeleteTutorialDialog';
 import { deleteTutorial, editTutorial } from '@/store/tutorialManagement/thunks';
+import { tutorialInterface } from '@/interfaces/tutorial.interta';
 
+interface TutorialProps {
+  tutorial: tutorialInterface;
+  selected: boolean;
+  showSnackbar: (message: string, severity: 'success' | 'error') => void;
+}
 
-const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, difficultyLevel, summary }) => {
+const Tutorial: React.FC<TutorialProps> = ({ tutorial, selected, showSnackbar }) => {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
-  const [editTitle, setEditTitle] = useState(title);
-  const [editSummary, setEditSummary] = useState(summary);
-  const [editDuration, setEditDuration] = useState<number | string>(estimatedDuration ?? 0);
-  const [editDifficulty, setEditDifficulty] = useState(difficultyLevel);
+  const [editTitle, setEditTitle] = useState(tutorial?.title ?? '');
+  const [editSummary, setEditSummary] = useState(tutorial?.summary ?? '');
+  const [editDuration, setEditDuration] = useState<number | string>(tutorial?.estimatedDuration ?? 0);
+  const [editDifficulty, setEditDifficulty] = useState(tutorial?.difficultyLevel ?? '');
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -52,18 +53,12 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
     setDeleteOpen(false);
   };
 
-  const showSnackbar = (message: string, severity: 'success' | 'error') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
-
   const handleSaveEdit = async () => {
     try {
-      if (!id) throw new Error('ID do tutorial não encontrado');
+      if (!tutorial.id) throw new Error('ID do tutorial não encontrado');
       await dispatch(
         editTutorial({
-          id,
+          id: tutorial.id,
           title: editTitle,
           summary: editSummary,
           estimatedDuration: editDuration ?? 0,
@@ -79,8 +74,8 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
 
   const handleConfirmDelete = async () => {
     try {
-      if (!id) return;
-      await dispatch(deleteTutorial(id)).unwrap();
+      if (!tutorial.id) return;
+      await dispatch(deleteTutorial(tutorial.id)).unwrap();
       showSnackbar('Tutorial excluído com sucesso!', 'success');
       handleDeleteClose();
     } catch (error) {
@@ -88,13 +83,18 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
     }
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
   return (
     <>
-      <ListItem key={id} sx={{ display: 'flex' }}>
+      <ListItem
+        key={tutorial?.id ?? ''}
+        sx={{
+          display: 'flex',
+          backgroundColor: selected ? '#f0f4f8' : 'transparent',
+          borderRadius: '4px',
+          marginBottom: '8px',
+          cursor: 'pointer',
+        }}
+      >
         <Avatar
           alt="Imagem Tutorial"
           src="https://cdn-icons-png.flaticon.com/512/684/684872.png"
@@ -102,8 +102,8 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
           style={{ marginRight: 16 }}
         />
         <ListItemText
-          primary={title}
-          secondary={`${estimatedDuration} Hora${estimatedDuration ?? 0 > 1 ? 's' : ''}`}
+          primary={tutorial?.title ?? ''}
+          secondary={`${tutorial?.estimatedDuration ?? 0} Hora${tutorial?.estimatedDuration ?? 0 > 1 ? 's' : ''}`}
           primaryTypographyProps={{ fontWeight: 800 }}
           secondaryTypographyProps={{ fontWeight: 500 }}
         />
@@ -138,13 +138,6 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
         open={deleteOpen}
         onClose={handleDeleteClose}
         onDelete={handleConfirmDelete}
-      />
-
-      <FeedbackSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        onClose={handleSnackbarClose}
       />
     </>
   );

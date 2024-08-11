@@ -2,8 +2,8 @@ import React from 'react';
 import { Box, Typography, InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { tutorProps } from '@/interfaces/tutor.interface';
-import PaginatedTutors from './PaginatedTutors';
 import styles from './TutorSection.module.css';
+import PaginatedTutors from './TutorList';
 
 interface TutorSectionProps {
   searchQuery: string;

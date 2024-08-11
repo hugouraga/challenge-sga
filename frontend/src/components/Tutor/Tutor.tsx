@@ -6,7 +6,7 @@ import { TutorialItemProps } from '../Tutorial/TutorialItemProps';
 import { formatDateToBrazilian } from '@/utils/dateFormatter';
 import { getAvatarImage } from '@/utils/random-icon.images';
 
-const TutorialItem: React.FC<TutorialItemProps> = ({ index, tutor, selected, onClick }) => {
+const Tutor: React.FC<TutorialItemProps> = ({ index, tutor, selected, onClick }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -51,4 +51,4 @@ const TutorialItem: React.FC<TutorialItemProps> = ({ index, tutor, selected, onC
   );
 };
 
-export default TutorialItem;
+export default Tutor;

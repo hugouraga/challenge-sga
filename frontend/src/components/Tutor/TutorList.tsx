@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Box, Stack, Pagination, Typography } from '@mui/material';
-import TutorItem from './TutorItem';
+import TutorItem from './Tutor';
 import { tutorProps } from '@/interfaces/tutor.interface';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   handleTutorClick: (tutor: tutorProps) => void;
 }
 
-const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, selectedTutor }) => {
+const TutorList: React.FC<Props> = ({ filteredTutors, handleTutorClick, selectedTutor }) => {
   const [page, setPage] = useState<number>(1);
   const itemsPerPage = 6;
 
@@ -22,8 +22,8 @@ const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, se
     []
   );
 
-  const paginatedTutors = useMemo(
-    () => filteredTutors?.slice((page - 1) * itemsPerPage, page * itemsPerPage),
+  const tutorList = useMemo(
+    () => filteredTutors.slice((page - 1) * itemsPerPage, page * itemsPerPage),
     [filteredTutors, page]
   );
 
@@ -40,8 +40,8 @@ const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, se
       }}
     >
       <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
-        {paginatedTutors?.length > 0 ? (
-          paginatedTutors.map((tutor, index) => (
+        {tutorList.length > 0 ? (
+          tutorList.map((tutor, index) => (
             <TutorItem
               key={tutor.id}
               tutor={tutor}
@@ -88,4 +88,4 @@ const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, se
   );
 };
 
-export default PaginatedTutors;
+export default TutorList;
