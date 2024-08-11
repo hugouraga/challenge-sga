@@ -10,6 +10,7 @@ import TableTutorial from "@/components/Tables/TableTutorials";
 import TutorSection from "@/components/Tutor/TutorSection";
 import Aside from "@/components/Aside/Aside";
 import Header from "@/components/Menu/Header";
+import FeedbackSnackbar from "@/components/Feedback/FeedbackSnackbar";
 
 const Home: React.FC = () => {
   const {
@@ -25,6 +26,20 @@ const Home: React.FC = () => {
   const [loadingSwitchingTutor, setLoadingSwitchingTutor] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentScreen, setCurrentScreen] = useState<"tutores" | "tutoriais">("tutores");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
 
   const handleSelect = useCallback(
     (tutor: tutorProps) => {
@@ -93,7 +108,19 @@ const Home: React.FC = () => {
           )}
         </Grid>
       </main>
-      <TutorialModal open={open} handleClose={handleClose} selectedTutor={selectedTutor} />
+      <TutorialModal
+        open={open}
+        handleClose={handleClose}
+        selectedTutor={selectedTutor}
+        showSnackbar={showSnackbar}
+      />
+
+      <FeedbackSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        onClose={handleSnackbarClose}
+      />
     </>
   );
 };
