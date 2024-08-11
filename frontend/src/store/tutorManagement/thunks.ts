@@ -21,16 +21,3 @@ export const fetchTutors = createAsyncThunk(
     return response.json();
   }
 );
-
-export const fetchTutorialsByCreatorId = createAsyncThunk(
-  'contentManagement/fetchTutorialsByCreatorId',
-  async ({ creatorId }: { creatorId: string }) => {
-    const response = await fetch(`${API_URL}/tutorials/list/${creatorId}`, {
-      method: 'GET',
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch tutorials');
-    const tutorials = await response.json();
-    return { creatorId, tutorials };
-  }
-);

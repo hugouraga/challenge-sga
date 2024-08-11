@@ -88,3 +88,17 @@ export const deleteTutorial = createAsyncThunk(
     return { id: tutorialId };
   }
 );
+
+export const fetchTutorialsByCreatorId = createAsyncThunk(
+  'contentManagement/fetchTutorialsByCreatorId',
+  async ({ creatorId }: { creatorId: string }) => {
+    const response = await fetch(`${API_URL}/tutorials/list/${creatorId}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to fetch tutorials');
+    const tutorials = await response.json();
+    console.log('esse console é da storage do redux' ,creatorId, tutorials )
+    return { creatorId, tutorials };
+  }
+);

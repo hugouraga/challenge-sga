@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Box, Stack, Pagination, Typography } from '@mui/material';
-import TutorialItem from './TutorItem';
+import TutorItem from './TutorItem';
 import { tutorProps } from '@/interfaces/tutor.interface';
 
 interface Props {
@@ -36,13 +36,13 @@ const PaginatedTutors: React.FC<Props> = ({ filteredTutors, handleTutorClick, se
         flexDirection: 'column',
         justifyContent: 'space-between',
         minHeight: '0',
-        overflowX: 'auto',  // Permite a rolagem horizontal na tabela como um todo
+        overflowX: 'auto',
       }}
     >
       <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
         {paginatedTutors?.length > 0 ? (
           paginatedTutors.map((tutor, index) => (
-            <TutorialItem
+            <TutorItem
               key={tutor.id}
               tutor={tutor}
               index={index}

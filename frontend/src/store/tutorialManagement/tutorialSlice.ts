@@ -5,6 +5,7 @@ import {
   createTutorial,
   editTutorial,
   deleteTutorial,
+  fetchTutorialsByCreatorId,
 } from './thunks';
 
 interface TutorialManagementState {
@@ -97,6 +98,18 @@ const tutorialSlice = createSlice({
       .addCase(deleteTutorial.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to delete tutorial';
+      }) 
+      .addCase(fetchTutorialsByCreatorId.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTutorialsByCreatorId.fulfilled, (state, action: PayloadAction<{ creatorId: string; tutorials: any[] }>) => {
+        state.loading = false;
+        const { creatorId, tutorials } = action.payload;
+        state.tutorialsByTutorId[creatorId] = tutorials;
+      })
+      .addCase(fetchTutorialsByCreatorId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch tutorials';
       });
   },
 });

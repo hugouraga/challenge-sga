@@ -3,19 +3,18 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { tutorProps } from '@/interfaces/tutor.interface';
 import debounce from 'debounce';
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
-import { fetchTutorialsByCreatorId, fetchTutors } from '@/store/tutorManagement/thunks';
+import { fetchTutors } from '@/store/tutorManagement/thunks';
 import { setSearchQuery } from '@/store/tutorManagement/tutorSlice';
-import { fetchPaginatedTutorials } from '@/store/tutorialManagement/thunks';
+import { fetchPaginatedTutorials, fetchTutorialsByCreatorId } from '@/store/tutorialManagement/thunks';
 
 export const useFetchTutors = () => {
   const dispatch = useAppDispatch();
-
-  // Seletores para tutorManagement e tutorialManagement
+  
   const { users, loading, page, searchQuery } = useAppSelector(
     (state) => state.tutorManagement
   );
 
-  const { tutorialsByTutorId, tutorials } = useAppSelector(
+  const { tutorials, tutorialsByTutorId } = useAppSelector(
     (state) => state.tutorialManagement
   );
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { tutorProps } from '@/interfaces/tutor.interface';
-import { fetchTutors, fetchTutorialsByCreatorId } from './thunks';
+import { fetchTutors } from './thunks';
 
 interface TutorManagementState {
   users: tutorProps[];
@@ -42,17 +42,6 @@ const tutorSlice = createSlice({
       .addCase(fetchTutors.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch tutors';
-      })
-      .addCase(fetchTutorialsByCreatorId.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchTutorialsByCreatorId.fulfilled, (state, action: PayloadAction<{ creatorId: string; tutorials: any[] }>) => {
-        state.loading = false;
-        const { creatorId, tutorials } = action.payload;
-      })
-      .addCase(fetchTutorialsByCreatorId.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Failed to fetch tutorials';
       });
   },
 });
