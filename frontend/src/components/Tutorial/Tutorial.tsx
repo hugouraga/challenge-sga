@@ -2,13 +2,16 @@
 
 import React, { useState } from 'react';
 import { useAppDispatch } from '@/store/hooks';
-import { ListItem, ListItemText, IconButton, Avatar, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, FormControl, InputLabel, Select, Snackbar, Alert } from '@mui/material';
+import { ListItem, ListItemText, IconButton, Avatar, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { deleteTutorial, editTutorial } from '@/store/appDataSlice/appDataSlice';
+import FeedbackSnackbar from '../Feedback/FeedbackSnackbar';
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
+import EditTutorialDialog from './Dialogs/EditTutorialDialog';
+import DeleteTutorialDialog from './Dialogs/DeleteTutorialDialog';
 
 
-const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, difficultyLevel, summary, createdAt }) => {
+const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, difficultyLevel, summary }) => {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -48,6 +51,12 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
     setDeleteOpen(false);
   };
 
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
   const handleSaveEdit = async () => {
     try {
       await dispatch(
@@ -59,48 +68,21 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
           difficultyLevel: editDifficulty,
         })
       ).unwrap();
-
-      setSnackbarMessage('Tutorial atualizado com sucesso!');
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
-
-      setTimeout(() => {
-        setSnackbarOpen(false);
-      }, 5000);
-
+      showSnackbar('Tutorial atualizado com sucesso!', 'success');
       handleEditClose();
     } catch (error) {
-      setSnackbarMessage('Erro ao atualizar o tutorial!');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-
-      setTimeout(() => {
-        setSnackbarOpen(false);
-      }, 5000);
+      showSnackbar('Erro ao atualizar o tutorial!', 'error');
     }
   };
 
   const handleConfirmDelete = async () => {
     try {
       if (!id) return;
-      setSnackbarOpen(true);
       await dispatch(deleteTutorial(id)).unwrap();
-      setSnackbarMessage('Tutorial excluído com sucesso!');
-      setSnackbarSeverity('success');
-
-      setTimeout(() => {
-        setSnackbarOpen(false);
-      }, 5000);
-
+      showSnackbar('Tutorial excluído com sucesso!', 'success');
       handleDeleteClose();
     } catch (error) {
-      setSnackbarMessage('Erro ao excluir o tutorial!');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-
-      setTimeout(() => {
-        setSnackbarOpen(false);
-      }, 5000);
+      showSnackbar('Erro ao excluir o tutorial!', 'error');
     }
   };
 
@@ -136,95 +118,32 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
         </Menu>
       </ListItem>
 
-      {/* Dialog para Editar */}
-      <Dialog open={editOpen} onClose={handleEditClose}>
-        <DialogTitle style={{ backgroundColor: 'white' }}>Editar Tutorial</DialogTitle>
-        <DialogContent style={{ backgroundColor: 'white' }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Título"
-                required
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Sumário"
-                required
-                multiline
-                rows={4}
-                value={editSummary}
-                onChange={(e) => setEditSummary(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Duração (horas)"
-                type="number"
-                required
-                value={editDuration}
-                onChange={(e) => setEditDuration(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel id="select-label">Dificuldade</InputLabel>
-                <Select
-                  labelId="select-label"
-                  value={editDifficulty}
-                  onChange={(e) => setEditDifficulty(e.target.value as string)}
-                  label="Dificuldade"
-                >
-                  <MenuItem value="beginner">Iniciante</MenuItem>
-                  <MenuItem value="intermediate">Intermediário</MenuItem>
-                  <MenuItem value="advanced">Avançado</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions style={{ backgroundColor: 'white' }}>
-          <Button onClick={handleEditClose} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleSaveEdit} color="primary">
-            Salvar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <EditTutorialDialog
+        open={editOpen}
+        title={editTitle ?? ''}
+        summary={editSummary ?? ''}
+        duration={editDuration}
+        difficulty={editDifficulty ?? ''}
+        onClose={handleEditClose}
+        onSave={handleSaveEdit}
+        setTitle={setEditTitle}
+        setSummary={setEditSummary}
+        setDuration={setEditDuration}
+        setDifficulty={setEditDifficulty}
+      />
 
-      {/* Dialog para Excluir */}
-      <Dialog open={deleteOpen} onClose={handleDeleteClose} >
-        <DialogTitle style={{ backgroundColor: 'white' }}>Excluir Tutorial</DialogTitle>
-        <DialogContent style={{ backgroundColor: 'white' }}>
-          <p>Você tem certeza que deseja excluir este tutorial?</p>
-        </DialogContent>
-        <DialogActions style={{ backgroundColor: 'white' }}>
-          <Button onClick={handleDeleteClose} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleConfirmDelete} color="secondary" style={{ color: 'red' }}>
-            Excluir
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteTutorialDialog
+        open={deleteOpen}
+        onClose={handleDeleteClose}
+        onDelete={handleConfirmDelete}
+      />
 
-      {/* Snackbar para notificação de sucesso ou erro */}
-      <Snackbar
+      <FeedbackSnackbar
         open={snackbarOpen}
-        autoHideDuration={5000}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      />
     </>
   );
 };

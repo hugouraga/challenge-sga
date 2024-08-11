@@ -138,6 +138,12 @@ export const editTutorial = createAsyncThunk(
         body: JSON.stringify(tutorialWithoutId),
       }
     );
+
+    if (!response.ok) {
+      const errorDetails = await response.json();
+      throw new Error(errorDetails.message || 'Erro ao atualizar tutorial');
+    }
+
     return response.json();
   }
 );
@@ -146,7 +152,7 @@ export const deleteTutorial = createAsyncThunk(
   'contentManagement/deleteTutorial',
   async (tutorialId: string) => {
     const token = localStorage.getItem('token');
-    await fetch(
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'}/tutorial/delete/${tutorialId}`,
       {
         method: 'DELETE',
@@ -156,12 +162,16 @@ export const deleteTutorial = createAsyncThunk(
         },
       }
     );
+
+    if (!response.ok) {
+      throw new Error('Erro ao excluir tutorial');
+    }
+
     return {
       id: tutorialId
     };
   }
 );
-
 export const editUser = createAsyncThunk(
   'contentManagement/editUser',
   async (tutorial: tutorProps) => {
