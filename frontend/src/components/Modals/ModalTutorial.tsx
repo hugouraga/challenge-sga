@@ -3,7 +3,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Te
 import { useAppDispatch } from '@/store/hooks';
 import { tutorProps } from '@/interfaces/tutor.interface';
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
-import { createTutorial } from '@/store/appDataSlice/appDataSlice';
+import { createTutorial } from '@/store/tutorialManagement/thunks';
 
 interface TutorialModalProps {
   open: boolean;

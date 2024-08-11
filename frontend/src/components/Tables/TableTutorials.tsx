@@ -21,8 +21,8 @@ import {
 } from "@mui/material";
 import { tutorialInterface } from "@/interfaces/tutorial.interta";
 import { useAppDispatch } from '@/store/hooks';
-import { fetchPaginatedTutorials } from '@/store/appDataSlice/appDataSlice';
 import { debounce } from '@/utils/debounce';
+import { fetchPaginatedTutorials } from '@/store/tutorialManagement/thunks';
 
 export interface fetchParams {
   page?: number;

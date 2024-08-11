@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import tutorsReducer from './appDataSlice/appDataSlice';
+import tutorReducer from '@/store/tutorManagement';
+import tutorialReducer from '@/store/tutorialManagement';
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    tutors: tutorsReducer,
+    tutorManagement: tutorReducer,
+    tutorialManagement: tutorialReducer,
   },
 });
 
+export default store;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

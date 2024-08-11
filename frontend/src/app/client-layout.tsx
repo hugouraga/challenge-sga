@@ -4,9 +4,9 @@ import { ReactNode } from 'react';
 import './globals.css';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import { ErrorProvider } from '@/context/ErrorContext';
-import { store } from '@/store';
 import { Provider } from 'react-redux';
 import { AuthProvider } from '@/context/AuthContext';
+import store from '@/store';
 
 interface ClientLayoutProps {
   children: ReactNode;

@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { ListItem, ListItemText, IconButton, Avatar, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { deleteTutorial, editTutorial } from '@/store/appDataSlice/appDataSlice';
+
 import FeedbackSnackbar from '../Feedback/FeedbackSnackbar';
 import { tutorialInterface } from '@/interfaces/tutorial.interta';
 import EditTutorialDialog from './Dialogs/EditTutorialDialog';
 import DeleteTutorialDialog from './Dialogs/DeleteTutorialDialog';
+import { deleteTutorial, editTutorial } from '@/store/tutorialManagement/thunks';
 
 
 const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, difficultyLevel, summary }) => {
@@ -59,12 +60,13 @@ const Tutorial: React.FC<tutorialInterface> = ({ id, title, estimatedDuration, d
 
   const handleSaveEdit = async () => {
     try {
+      if (!id) throw new Error('ID do tutorial não encontrado');
       await dispatch(
         editTutorial({
           id,
           title: editTitle,
           summary: editSummary,
-          estimatedDuration: editDuration,
+          estimatedDuration: editDuration ?? 0,
           difficultyLevel: editDifficulty,
         })
       ).unwrap();
