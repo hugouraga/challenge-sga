@@ -15,7 +15,9 @@ import {
   Pagination,
   Select,
   MenuItem,
-  SelectChangeEvent
+  SelectChangeEvent,
+  useTheme,
+  useMediaQuery
 } from "@mui/material";
 import { tutorialInterface } from "@/interfaces/tutorial.interta";
 import { useAppDispatch } from '@/store/hooks';
@@ -40,6 +42,9 @@ const TableTutorial: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState<number>(0);
   const dispatch = useAppDispatch();
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const fetchTutorials = useCallback(async (updatedFilters = filters) => {
     setLoading(true);
@@ -109,10 +114,39 @@ const TableTutorial: React.FC = () => {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', padding: 3, backgroundColor: '#ffffff' }}>
-      <Typography fontSize={30} fontWeight={700}>Lista de tutoriais</Typography>
-      <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
-        <TextField label="Título" name="title" value={filters.title} onChange={handleFilterChange} variant="outlined" size="small" sx={{ backgroundColor: '#ffffff' }} />
-        <TextField label="Duração" name="duration" value={filters.duration} onChange={handleFilterChange} variant="outlined" size="small" sx={{ backgroundColor: '#ffffff' }} />
+      <Typography
+        fontSize={30}
+        fontWeight={700}
+        sx={{ marginBottom: isSmallScreen ? 2 : 3, textAlign: isSmallScreen ? 'center' : 'left' }}
+      >
+        Lista de tutoriais
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: isSmallScreen ? 'column' : 'row',
+          gap: 2,
+          marginBottom: 3,
+        }}
+      >
+        <TextField
+          label="Título"
+          name="title"
+          value={filters.title}
+          onChange={handleFilterChange}
+          variant="outlined"
+          size="small"
+          sx={{ backgroundColor: '#ffffff', flex: 1 }}
+        />
+        <TextField
+          label="Duração"
+          name="duration"
+          value={filters.duration}
+          onChange={handleFilterChange}
+          variant="outlined"
+          size="small"
+          sx={{ backgroundColor: '#ffffff', flex: 1 }}
+        />
         <Select
           labelId="select-label"
           name="difficulty"
@@ -120,7 +154,7 @@ const TableTutorial: React.FC = () => {
           onChange={handleDifficultyChange}
           variant="outlined"
           size="small"
-          sx={{ backgroundColor: '#ffffff', minWidth: 150 }}
+          sx={{ backgroundColor: '#ffffff', minWidth: 150, flex: 1 }}
           displayEmpty
         >
           <MenuItem value="">Todos</MenuItem>
