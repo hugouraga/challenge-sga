@@ -53,6 +53,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           anchorElNav={anchorElNav}
           handleOpenNavMenu={handleOpenNavMenu}
           handleCloseNavMenu={handleCloseNavMenu}
+          onMenuClick={onMenuClick}
         />
         <Typography
           variant="h6"
